@@ -1,0 +1,7 @@
+{
+ "schema_version":1,"sdk_api_version":1,"plugin_id":"vision.file-output","plugin_version":"0.1.0","kind":"ResultOutput",
+ "build_id":"file-output-v1","platform":"windows","architecture":"x64","compiler_abi":"msvc-v143-md","runtime_variant":"Release",
+ "entry_library":"vision-file-output.dll","capabilities":["jsonl","csv","atomic-file"],"threading_model":"Serialized","max_instances":1,
+ "parameters_schema":{"type":"object","properties":{"root":{"type":"string"},"format":{"type":"string","enum":["jsonl","csv"]},"max_files":{"type":"integer","minimum":1,"maximum":128}},
+ "required":["root","format","max_files"],"additionalProperties":false},"dependencies":[],"license_metadata":{"spdx":"NOASSERTION","file":"LICENSE.txt"}
+}

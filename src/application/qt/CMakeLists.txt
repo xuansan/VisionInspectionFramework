@@ -1,0 +1,5 @@
+add_library(vision_application_qt STATIC station.cpp frame_archive.cpp device.cpp dispatcher.cpp durable_session.cpp demo_runner.cpp recipe.cpp trial.cpp)
+target_include_directories(vision_application_qt PUBLIC "${CMAKE_CURRENT_SOURCE_DIR}/include")
+target_link_libraries(vision_application_qt PUBLIC vision_application vision_algorithm_qt)
+target_link_libraries(vision_application_qt PRIVATE vision_json)
+vision_configure_target(vision_application_qt)

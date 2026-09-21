@@ -1,0 +1,29 @@
+{
+  "protocol_major": 1,
+  "protocol_minor": 0,
+  "message_type": "DeviceTask",
+  "request_id": "c-1",
+  "run_id": "run-1",
+  "worker_id": "worker-1",
+  "worker_epoch": "1",
+  "sequence": "1",
+  "correlation": {
+    "run_id": "run-1",
+    "worker_id": "worker-1",
+    "worker_epoch": "1",
+    "inspection_id": "inspection-1",
+    "check_id": "surface",
+    "task_id": "task-1",
+    "attempt": "1"
+  },
+  "payload": {
+    "session_id": "session-1",
+    "command_sequence": "1",
+    "ready": true,
+    "arrival": false,
+    "position": true,
+    "safety_ok": true,
+    "result_id": null,
+    "quality": "Unknown"
+  }
+}

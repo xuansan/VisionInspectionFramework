@@ -1,0 +1,15 @@
+{
+  "generator": "tools/generate_inference_fixtures.py",
+  "onnx": "1.17.0",
+  "reference": "onnx.reference.ReferenceEvaluator",
+  "source": "Original input-dependent contract fixture; no training weights",
+  "accuracy_scope": "No production defect accuracy claim",
+  "model_sha256": "d06e086ab2c614d06bcb3124ad5bd2999bed49482099e6652617c72c219a2978",
+  "models": {
+    "detection": "d06e086ab2c614d06bcb3124ad5bd2999bed49482099e6652617c72c219a2978",
+    "classification": "d7306f0c0f9b04dea492a15cc09bce7b7c80aff27baf20f2888a21418376102f",
+    "segmentation": "bdbc8cf34538b98239a35f972d3992bc2f965ad32d5227803da2a4a00b508743"
+  },
+  "numpy": "1.26.4",
+  "license": "Project original fixture; project license remains NOASSERTION until selected"
+}

@@ -1,0 +1,18 @@
+{
+  "schema_version": 1,
+  "model": "segmentation.onnx",
+  "model_hash": "sha256:bdbc8cf34538b98239a35f972d3992bc2f965ad32d5227803da2a4a00b508743",
+  "type": "instance_segmentation",
+  "input": "images",
+  "output": "output0",
+  "labels": [
+    "scratch",
+    "spot"
+  ],
+  "width": 8,
+  "height": 8,
+  "max_results": 64,
+  "score": 0.25,
+  "iou": 0.45,
+  "prototypes": "output1"
+}

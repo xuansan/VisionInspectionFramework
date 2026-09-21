@@ -1,0 +1,40 @@
+{
+  "protocol_major": 1,
+  "protocol_minor": 0,
+  "message_type": "CaptureFinished",
+  "request_id": "c-1",
+  "run_id": "run-1",
+  "worker_id": "worker-1",
+  "worker_epoch": "1",
+  "sequence": "1",
+  "correlation": {
+    "run_id": "run-1",
+    "worker_id": "worker-1",
+    "worker_epoch": "1",
+    "inspection_id": "inspection-1",
+    "check_id": "surface",
+    "task_id": "task-1",
+    "attempt": "1"
+  },
+  "payload": {
+    "execution_state": "Succeeded",
+    "frame": {
+      "schema_version": 1,
+      "run_id": "run-1",
+      "pool_id": "camera-1",
+      "worker_id": "worker-1",
+      "worker_epoch": "1",
+      "slot_id": "0",
+      "slot_generation": "1",
+      "lease_id": "2",
+      "frame_id": "frame-1",
+      "width": 1024,
+      "height": 768,
+      "stride": "1024",
+      "offset": "0",
+      "length": "786432",
+      "pixel_format": "Mono8"
+    },
+    "error_code": null
+  }
+}

@@ -1,0 +1,240 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Vision recipe v1",
+  "type": "object",
+  "properties": {
+    "schema_version": {
+      "const": 1
+    },
+    "recipe_id": {
+      "type": "string",
+      "pattern": "^[A-Za-z0-9_.:-]{1,128}$"
+    },
+    "version": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 128,
+      "pattern": "^[^\\u0000]+$"
+    },
+    "content_hash": {
+      "type": "string",
+      "pattern": "^sha256:[a-f0-9]{64}$"
+    },
+    "deadline_ms": {
+      "type": "string",
+      "pattern": "^[1-9][0-9]{0,19}$",
+      "description": "Canonical decimal uint64. Reader additionally enforces <=18446744073709551615."
+    },
+    "trigger_mode": {
+      "enum": [
+        "Software",
+        "Hardware"
+      ]
+    },
+    "association": {
+      "const": "TriggerId"
+    },
+    "checks": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "check_id": {
+            "type": "string",
+            "pattern": "^[A-Za-z0-9_.:-]{1,128}$"
+          },
+          "camera_id": {
+            "type": "string",
+            "pattern": "^[A-Za-z0-9_.:-]{1,128}$"
+          },
+          "required": {
+            "type": "boolean"
+          },
+          "rule": {
+            "$ref": "#/$defs/rule"
+          },
+          "model_hash": {
+            "type": "string",
+            "pattern": "^sha256:[a-f0-9]{64}$"
+          }
+        },
+        "required": [
+          "check_id",
+          "camera_id",
+          "required",
+          "rule"
+        ],
+        "additionalProperties": false
+      },
+      "maxItems": 64,
+      "minItems": 1
+    },
+    "storage": {
+      "type": "object",
+      "properties": {
+        "image_policy": {
+          "enum": [
+            "none",
+            "ng_only",
+            "all"
+          ]
+        },
+        "traceability": {
+          "enum": [
+            "optional",
+            "required"
+          ]
+        }
+      },
+      "required": [
+        "image_policy",
+        "traceability"
+      ],
+      "additionalProperties": false
+    },
+    "outputs": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "pattern": "^[A-Za-z0-9_.:-]{1,128}$"
+      },
+      "maxItems": 32,
+      "minItems": 0,
+      "uniqueItems": true
+    }
+  },
+  "required": [
+    "schema_version",
+    "recipe_id",
+    "version",
+    "content_hash",
+    "deadline_ms",
+    "trigger_mode",
+    "association",
+    "checks",
+    "storage",
+    "outputs"
+  ],
+  "additionalProperties": false,
+  "$defs": {
+    "rule": {
+      "oneOf": [
+        {
+          "type": "object",
+          "properties": {
+            "kind": {
+              "const": "forbidden_class"
+            },
+            "class_id": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 2147483647
+            }
+          },
+          "required": [
+            "kind",
+            "class_id"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "kind": {
+              "const": "count_range"
+            },
+            "class_id": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 2147483647
+            },
+            "minimum": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 4294967295
+            },
+            "maximum": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 4294967295
+            }
+          },
+          "required": [
+            "kind",
+            "class_id",
+            "minimum",
+            "maximum"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "kind": {
+              "const": "allowed_classification"
+            },
+            "labels": {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 256,
+                "pattern": "^[^\\u0000]+$"
+              },
+              "maxItems": 256,
+              "minItems": 1,
+              "uniqueItems": true
+            }
+          },
+          "required": [
+            "kind",
+            "labels"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "kind": {
+              "const": "measurement_range"
+            },
+            "name": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 128,
+              "pattern": "^[^\\u0000]+$"
+            },
+            "unit": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 32,
+              "pattern": "^[^\\u0000]+$"
+            },
+            "minimum": {
+              "type": "number"
+            },
+            "maximum": {
+              "type": "number"
+            },
+            "include_minimum": {
+              "type": "boolean"
+            },
+            "include_maximum": {
+              "type": "boolean"
+            }
+          },
+          "required": [
+            "kind",
+            "name",
+            "unit",
+            "minimum",
+            "maximum",
+            "include_minimum",
+            "include_maximum"
+          ],
+          "additionalProperties": false
+        }
+      ]
+    }
+  }
+}

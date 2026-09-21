@@ -1,0 +1,50 @@
+{
+  "protocol_major": 1,
+  "protocol_minor": 0,
+  "message_type": "CheckFinished",
+  "request_id": "c-1",
+  "run_id": "run-1",
+  "worker_id": "worker-1",
+  "worker_epoch": "1",
+  "sequence": "1",
+  "correlation": {
+    "run_id": "run-1",
+    "worker_id": "worker-1",
+    "worker_epoch": "1",
+    "inspection_id": "inspection-1",
+    "check_id": "surface",
+    "task_id": "task-1",
+    "attempt": "1"
+  },
+  "payload": {
+    "check": {
+      "correlation": {
+        "run_id": "run-1",
+        "worker_id": "worker-1",
+        "worker_epoch": "1",
+        "inspection_id": "inspection-1",
+        "check_id": "surface",
+        "task_id": "task-1",
+        "attempt": "1"
+      },
+      "defects": [
+        {
+          "box_xyxy": [
+            10.0,
+            20.0,
+            30.0,
+            40.0
+          ],
+          "class_id": 0,
+          "coordinate_space": "original_pixels",
+          "label": "scratch",
+          "score": 0.95
+        }
+      ],
+      "elapsed_ns": "0",
+      "execution_state": "Succeeded",
+      "measurements": [],
+      "quality": "NG"
+    }
+  }
+}

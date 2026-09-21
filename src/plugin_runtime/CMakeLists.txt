@@ -1,0 +1,6 @@
+if(WIN32)
+    add_library(vision_plugin_runtime STATIC windows_loader.cpp)
+    target_include_directories(vision_plugin_runtime PUBLIC "${CMAKE_CURRENT_SOURCE_DIR}/include")
+    target_link_libraries(vision_plugin_runtime PUBLIC vision_plugin_sdk vision_serialization)
+    vision_configure_target(vision_plugin_runtime)
+endif()

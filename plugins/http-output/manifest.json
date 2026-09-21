@@ -1,0 +1,7 @@
+{
+ "schema_version":1,"sdk_api_version":1,"plugin_id":"vision.http-output","plugin_version":"0.1.0","kind":"ResultOutput",
+ "build_id":"http-output-v1","platform":"windows","architecture":"x64","compiler_abi":"msvc-v143-md","runtime_variant":"Release",
+ "entry_library":"vision-http-output.dll","capabilities":["http-readonly","sse-bounded","bearer-auth"],"threading_model":"Serialized","max_instances":1,
+ "parameters_schema":{"type":"object","properties":{"root":{"type":"string"},"port":{"type":"integer","minimum":1024,"maximum":65535},"token_env":{"type":"string","maxLength":128}},
+ "required":["root","port","token_env"],"additionalProperties":false},"dependencies":[],"license_metadata":{"spdx":"NOASSERTION","file":"LICENSE.txt"}
+}

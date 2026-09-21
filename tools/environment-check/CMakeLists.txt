@@ -1,0 +1,11 @@
+cmake_minimum_required(VERSION 3.25)
+project(vision_environment_check LANGUAGES CXX)
+
+add_executable(vision_environment_check main.cpp)
+target_compile_features(vision_environment_check PRIVATE cxx_std_20)
+set_target_properties(vision_environment_check PROPERTIES CXX_EXTENSIONS OFF)
+if(MSVC)
+    target_compile_options(vision_environment_check PRIVATE /W4 /permissive- /utf-8 /EHsc)
+endif()
+enable_testing()
+add_test(NAME cpp20_environment_smoke COMMAND vision_environment_check)

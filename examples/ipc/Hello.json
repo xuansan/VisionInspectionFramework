@@ -1,0 +1,21 @@
+{
+  "protocol_major": 1,
+  "protocol_minor": 0,
+  "message_type": "Hello",
+  "request_id": "c-1",
+  "run_id": "run-1",
+  "worker_id": "worker-1",
+  "worker_epoch": "1",
+  "sequence": "1",
+  "correlation": null,
+  "payload": {
+    "token": "EXAMPLE-NOT-A-LIVE-CREDENTIAL-00000000",
+    "required_capabilities": [
+      "capture-v1",
+      "inspect-v1",
+      "device-v1",
+      "delivery-v1",
+      "inference-v1"
+    ]
+  }
+}

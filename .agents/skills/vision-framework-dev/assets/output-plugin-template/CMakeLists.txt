@@ -1,0 +1,20 @@
+if(NOT TARGET vision_plugin_sdk OR NOT TARGET vision_application_qt)
+    message(FATAL_ERROR "Configure the framework with VISION_EXTENSION_DIR pointing here; see PLUGIN.md")
+endif()
+add_library(@PROJECT_NAME@ SHARED output.cpp)
+target_link_libraries(@PROJECT_NAME@ PRIVATE vision_plugin_sdk vision_serialization vision_json)
+vision_configure_target(@PROJECT_NAME@)
+add_custom_command(TARGET @PROJECT_NAME@ POST_BUILD
+    COMMAND ${CMAKE_COMMAND} -E copy_if_different "${CMAKE_CURRENT_SOURCE_DIR}/manifest.json" "$<TARGET_FILE_DIR:@PROJECT_NAME@>/@PROJECT_NAME@.json"
+    COMMAND ${CMAKE_COMMAND} -E copy_if_different "${CMAKE_CURRENT_SOURCE_DIR}/LICENSE.txt" "$<TARGET_FILE_DIR:@PROJECT_NAME@>/LICENSE.txt")
+add_executable(@PROJECT_NAME@-smoke smoke.cpp)
+vision_demo_resources(@PROJECT_NAME@-smoke)
+vision_configure_target(@PROJECT_NAME@-smoke)
+add_dependencies(@PROJECT_NAME@-smoke @PROJECT_NAME@)
+if(BUILD_TESTING)
+    foreach(mode IN ITEMS normal reject drop-ack)
+        add_test(NAME user.@PROJECT_NAME@.${mode} COMMAND @PROJECT_NAME@-smoke "${mode}" "$<TARGET_FILE:vision-worker-host>"
+            "$<TARGET_FILE_DIR:@PROJECT_NAME@>/@PROJECT_NAME@.json" "$<TARGET_FILE_DIR:vision-test-output>/test-output.json")
+        set_tests_properties(user.@PROJECT_NAME@.${mode} PROPERTIES TIMEOUT 15)
+    endforeach()
+endif()

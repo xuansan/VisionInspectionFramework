@@ -1,0 +1,105 @@
+{
+  "protocol_major": 1,
+  "protocol_minor": 0,
+  "message_type": "DeliveryTask",
+  "request_id": "c-1",
+  "run_id": "run-1",
+  "worker_id": "worker-1",
+  "worker_epoch": "1",
+  "sequence": "1",
+  "correlation": {
+    "run_id": "run-1",
+    "worker_id": "worker-1",
+    "worker_epoch": "1",
+    "inspection_id": "inspection-1",
+    "check_id": "surface",
+    "task_id": "task-1",
+    "attempt": "1"
+  },
+  "payload": {
+    "event": {
+      "emitted_at_unix_ns": "1789748861953154600",
+      "event_id": "demo-371000664-1169553353-3738944697-585723613-event-1",
+      "event_type": "inspection.finalized",
+      "result": {
+        "checks": [
+          {
+            "correlation": {
+              "attempt": "1",
+              "check_id": "surface",
+              "inspection_id": "demo-ins-1",
+              "run_id": "demo-371000664-1169553353-3738944697-585723613",
+              "task_id": "task-surface-1",
+              "worker_epoch": "1",
+              "worker_id": "demo-worker"
+            },
+            "defects": [
+              {
+                "box_xyxy": [
+                  10.0,
+                  20.0,
+                  30.0,
+                  40.0
+                ],
+                "class_id": 0,
+                "coordinate_space": "original_pixels",
+                "label": "scratch",
+                "score": 0.95
+              }
+            ],
+            "elapsed_ns": "0",
+            "execution_state": "Succeeded",
+            "measurements": [],
+            "quality": "NG"
+          },
+          {
+            "correlation": {
+              "attempt": "1",
+              "check_id": "width",
+              "inspection_id": "demo-ins-1",
+              "run_id": "demo-371000664-1169553353-3738944697-585723613",
+              "task_id": "task-width-1",
+              "worker_epoch": "1",
+              "worker_id": "demo-worker"
+            },
+            "defects": [],
+            "elapsed_ns": "0",
+            "execution_state": "Succeeded",
+            "measurements": [
+              {
+                "name": "width",
+                "unit": "mm",
+                "value": 10.0
+              }
+            ],
+            "quality": "OK"
+          }
+        ],
+        "execution_state": "Completed",
+        "expected_checks": [
+          {
+            "check_id": "surface",
+            "required": true
+          },
+          {
+            "check_id": "width",
+            "required": true
+          }
+        ],
+        "inspection_id": "demo-ins-1",
+        "mode": "Demo",
+        "quality": "NG",
+        "reason": "AllRequiredChecksSucceeded",
+        "recipe_hash": "sha256:0000000000000000000000000000000000000000000000000000000000000000",
+        "run_id": "demo-371000664-1169553353-3738944697-585723613",
+        "station_id": "demo-station",
+        "workpiece_id": "demo-piece-1"
+      },
+      "schema_version": 1,
+      "sequence": "1"
+    },
+    "output_instance_id": "test-output",
+    "attempt": "1",
+    "budget_ns": "1000000000"
+  }
+}

@@ -1,0 +1,251 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Vision plugin-manifest v1",
+  "type": "object",
+  "properties": {
+    "schema_version": {
+      "const": 1
+    },
+    "plugin_id": {
+      "type": "string",
+      "pattern": "^[A-Za-z0-9_.:-]{1,128}$"
+    },
+    "plugin_version": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 128,
+      "pattern": "^[^\\u0000]+$"
+    },
+    "kind": {
+      "enum": [
+        "Camera",
+        "Algorithm",
+        "Communication",
+        "ObjectStorage",
+        "ResultOutput"
+      ]
+    },
+    "sdk_api_version": {
+      "const": 1
+    },
+    "build_id": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 128,
+      "pattern": "^[^\\u0000]+$"
+    },
+    "platform": {
+      "enum": [
+        "windows",
+        "linux"
+      ]
+    },
+    "architecture": {
+      "const": "x64"
+    },
+    "compiler_abi": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 128,
+      "pattern": "^[^\\u0000]+$"
+    },
+    "runtime_variant": {
+      "enum": [
+        "Release",
+        "Debug"
+      ]
+    },
+    "entry_library": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 256,
+      "pattern": "^[^/\\\\:]+\\.(dll|so)$"
+    },
+    "capabilities": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1,
+        "maxLength": 128,
+        "pattern": "^[^\\u0000]+$"
+      },
+      "maxItems": 64,
+      "minItems": 0,
+      "uniqueItems": true
+    },
+    "threading_model": {
+      "enum": [
+        "Serialized",
+        "Reentrant",
+        "DedicatedThread"
+      ]
+    },
+    "max_instances": {
+      "type": "integer",
+      "minimum": 1,
+      "maximum": 1024
+    },
+    "parameters_schema": {
+      "type": "object",
+      "properties": {
+        "type": {
+          "const": "object"
+        },
+        "properties": {
+          "type": "object",
+          "maxProperties": 128,
+          "propertyNames": {
+            "type": "string",
+            "pattern": "^[A-Za-z0-9_.:-]{1,128}$"
+          },
+          "additionalProperties": {
+            "type": "object",
+            "properties": {
+              "type": {
+                "enum": [
+                  "string",
+                  "integer",
+                  "number",
+                  "boolean"
+                ]
+              },
+              "default": {
+                "type": [
+                  "string",
+                  "integer",
+                  "number",
+                  "boolean"
+                ]
+              },
+              "minimum": {
+                "type": "number"
+              },
+              "maximum": {
+                "type": "number"
+              },
+              "minLength": {
+                "type": "integer",
+                "minimum": 0,
+                "maximum": 4096
+              },
+              "maxLength": {
+                "type": "integer",
+                "minimum": 0,
+                "maximum": 4096
+              },
+              "enum": {
+                "type": "array",
+                "items": {
+                  "type": [
+                    "string",
+                    "integer",
+                    "number",
+                    "boolean"
+                  ]
+                },
+                "maxItems": 256,
+                "minItems": 1,
+                "uniqueItems": true
+              },
+              "description": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 2048,
+                "pattern": "^[^\\u0000]+$"
+              },
+              "unit": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 32,
+                "pattern": "^[^\\u0000]+$"
+              },
+              "sensitive": {
+                "type": "boolean"
+              },
+              "mutable_during_run": {
+                "type": "boolean"
+              }
+            },
+            "required": [
+              "type"
+            ],
+            "additionalProperties": false
+          }
+        },
+        "additionalProperties": {
+          "const": false
+        },
+        "required": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "pattern": "^[A-Za-z0-9_.:-]{1,128}$"
+          },
+          "maxItems": 128,
+          "minItems": 0,
+          "uniqueItems": true
+        }
+      },
+      "required": [
+        "type",
+        "properties",
+        "additionalProperties"
+      ],
+      "additionalProperties": false
+    },
+    "dependencies": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1,
+        "maxLength": 128,
+        "pattern": "^[^\\u0000]+$"
+      },
+      "maxItems": 64,
+      "minItems": 0,
+      "uniqueItems": true
+    },
+    "license_metadata": {
+      "type": "object",
+      "properties": {
+        "spdx": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 128,
+          "pattern": "^[^\\u0000]+$"
+        },
+        "file": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 128,
+          "pattern": "^[^/\\\\:]+$"
+        }
+      },
+      "required": [
+        "spdx",
+        "file"
+      ],
+      "additionalProperties": false
+    }
+  },
+  "required": [
+    "schema_version",
+    "plugin_id",
+    "plugin_version",
+    "kind",
+    "sdk_api_version",
+    "build_id",
+    "platform",
+    "architecture",
+    "compiler_abi",
+    "runtime_variant",
+    "entry_library",
+    "capabilities",
+    "threading_model",
+    "max_instances",
+    "parameters_schema",
+    "dependencies",
+    "license_metadata"
+  ],
+  "additionalProperties": false
+}

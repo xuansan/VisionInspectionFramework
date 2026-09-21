@@ -1,0 +1,17 @@
+{
+  "schema_version":1,
+  "run_id":"example-run",
+  "pool_id":"camera-1",
+  "worker_id":"algorithm-1",
+  "worker_epoch":"1",
+  "slot_id":"0",
+  "slot_generation":"1",
+  "lease_id":"2",
+  "frame_id":"frame-1",
+  "width":1024,
+  "height":768,
+  "stride":"1024",
+  "offset":"0",
+  "length":"786432",
+  "pixel_format":"Mono8"
+}

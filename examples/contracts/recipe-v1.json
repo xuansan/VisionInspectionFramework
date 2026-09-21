@@ -1,0 +1,25 @@
+{
+  "schema_version": 1,
+  "recipe_id": "demo-dual-check",
+  "version": "1.0.0",
+  "content_hash": "sha256:0000000000000000000000000000000000000000000000000000000000000000",
+  "deadline_ms": "1000",
+  "trigger_mode": "Software",
+  "association": "TriggerId",
+  "checks": [
+    {
+      "check_id": "surface",
+      "camera_id": "left",
+      "required": true,
+      "rule": {"kind": "forbidden_class", "class_id": 0}
+    },
+    {
+      "check_id": "width",
+      "camera_id": "right",
+      "required": true,
+      "rule": {"kind": "measurement_range", "name": "width", "unit": "mm", "minimum": 9, "maximum": 11, "include_minimum": true, "include_maximum": true}
+    }
+  ],
+  "storage": {"image_policy": "none", "traceability": "optional"},
+  "outputs": []
+}

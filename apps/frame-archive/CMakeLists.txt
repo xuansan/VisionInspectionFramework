@@ -1,0 +1,3 @@
+add_executable(vision-frame-archive main.cpp)
+target_link_libraries(vision-frame-archive PRIVATE vision_storage vision_frame_transport vision_serialization vision_inference vision_json)
+vision_configure_target(vision-frame-archive)

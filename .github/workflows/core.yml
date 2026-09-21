@@ -1,0 +1,22 @@
+name: Core skeleton
+on: [push, pull_request, workflow_dispatch]
+permissions:
+  contents: read
+jobs:
+  core:
+    strategy:
+      matrix:
+        include:
+          - os: windows-2022
+            preset: windows-core
+          - os: ubuntu-24.04
+            preset: linux-core
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@v4
+      - name: Configure (without Qt)
+        run: cmake --preset ${{ matrix.preset }} -DVISION_ALLOW_DOWNLOADS=ON
+      - name: Build
+        run: cmake --build --preset ${{ matrix.preset }} --parallel 2
+      - name: Test
+        run: ctest --preset ${{ matrix.preset }}

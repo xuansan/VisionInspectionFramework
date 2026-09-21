@@ -1,0 +1,4 @@
+add_library(vision_algorithm_qt STATIC session.cpp)
+target_include_directories(vision_algorithm_qt PUBLIC "${CMAKE_CURRENT_SOURCE_DIR}/include")
+target_link_libraries(vision_algorithm_qt PUBLIC vision_capture_qt)
+vision_configure_target(vision_algorithm_qt)

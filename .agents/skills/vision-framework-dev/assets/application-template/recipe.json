@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "recipe_id": "demo-dual-brightness",
+  "version": "1.0.0",
+  "mode": "Demo",
+  "width": 64,
+  "height": 48,
+  "deadline_ms": 1000,
+  "cameras": [
+    {"seed": 42, "minimum": 0, "maximum": 255},
+    {"seed": 43, "minimum": 0, "maximum": 255}
+  ]
+}

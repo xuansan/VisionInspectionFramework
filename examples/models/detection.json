@@ -1,0 +1,17 @@
+{
+  "schema_version": 1,
+  "model": "detection.onnx",
+  "model_hash": "sha256:d06e086ab2c614d06bcb3124ad5bd2999bed49482099e6652617c72c219a2978",
+  "type": "detection",
+  "input": "images",
+  "output": "output0",
+  "labels": [
+    "scratch",
+    "spot"
+  ],
+  "width": 8,
+  "height": 8,
+  "max_results": 64,
+  "score": 0.25,
+  "iou": 0.45
+}

@@ -1,0 +1,19 @@
+{
+  "schema_version": 1,
+  "plugin_id": "demo.basic",
+  "plugin_version": "0.1.0",
+  "kind": "Algorithm",
+  "sdk_api_version": 1,
+  "build_id": "example-not-a-built-plugin",
+  "platform": "windows",
+  "architecture": "x64",
+  "compiler_abi": "msvc-v143",
+  "runtime_variant": "Release",
+  "entry_library": "demo-basic.dll",
+  "capabilities": ["synthetic-observations"],
+  "threading_model": "Serialized",
+  "max_instances": 1,
+  "parameters_schema": {"type": "object", "properties": {}, "additionalProperties": false},
+  "dependencies": [],
+  "license_metadata": {"spdx": "NOASSERTION", "file": "LICENSE.txt"}
+}

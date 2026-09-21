@@ -1,0 +1,24 @@
+{
+  "openapi": "3.0.3",
+  "info": {"title": "Vision read-only output API", "version": "1.0.0", "description": "Demo backend. Bearer authentication on every endpoint. See HTTP输出-v1.md for bounds and delivery semantics."},
+  "servers": [{"url": "http://127.0.0.1:8080"}],
+  "security": [{"bearerAuth": []}],
+  "components": {
+    "securitySchemes": {"bearerAuth": {"type": "http", "scheme": "bearer"}},
+    "responses": {"Error": {"description": "Bounded JSON error: code, message, request_id. Authentication 401, invalid query 400, missing 404, conflict 409, throttled 429, storage unavailable 503."}}
+  },
+  "paths": {
+    "/api/v1/health": {"get": {"operationId": "health", "responses": {"200": {"description": "alive, production_ready=false, storage_available, live_window, fresh"}, "default": {"$ref": "#/components/responses/Error"}}}},
+    "/api/v1/inspections": {"get": {"operationId": "history", "parameters": [
+      {"name": "after", "in": "query", "schema": {"type": "string", "pattern": "^[0-9]+$", "default": "0"}},
+      {"name": "limit", "in": "query", "schema": {"type": "integer", "minimum": 1, "maximum": 200, "default": 50}}
+    ], "responses": {"200": {"description": "items: immutable result envelopes; next_cursor: decimal string"}, "default": {"$ref": "#/components/responses/Error"}}}},
+    "/api/v1/inspections/{event_id}": {"get": {"operationId": "result", "parameters": [{"name": "event_id", "in": "path", "required": true, "schema": {"type": "string", "maxLength": 128}}], "responses": {"200": {"description": "Immutable result envelope"}, "default": {"$ref": "#/components/responses/Error"}}}},
+    "/api/v1/events": {"get": {"operationId": "events", "parameters": [{"name": "Last-Event-ID", "in": "header", "schema": {"type": "string"}, "description": "Opaque epoch/sequence from previous SSE batch. Old epoch or expired window:409."}], "responses": {"200": {"description": "Finite batch, at most64 events, retry1000ms; not durable subscriber delivery", "content": {"text/event-stream": {"schema": {"type": "string"}}}}, "default": {"$ref": "#/components/responses/Error"}}}},
+    "/api/v1/images/{image_id}/access": {"get": {"operationId": "imageAccess", "parameters": [{"name": "image_id", "in": "path", "required": true, "schema": {"type": "string", "maxLength": 128}}], "responses": {"200": {"description": "url, expires_unix, authorization_required=true. Not an anonymous signed URL."}, "default": {"$ref": "#/components/responses/Error"}}}},
+    "/api/v1/images/{image_id}/content": {"get": {"operationId": "imageContent", "parameters": [
+      {"name": "image_id", "in": "path", "required": true, "schema": {"type": "string", "maxLength": 128}},
+      {"name": "expires", "in": "query", "required": true, "schema": {"type": "string"}, "description": "Unix seconds, must be between now and now+60; bearer still required."}
+    ], "responses": {"200": {"description": "Hash-verified local image cache, at most16MiB", "content": {"application/octet-stream": {"schema": {"type": "string", "format": "binary"}}}}, "default": {"$ref": "#/components/responses/Error"}}}}
+  }
+}

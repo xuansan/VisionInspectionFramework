@@ -1,0 +1,14 @@
+{
+  "protocol_major": 1,
+  "protocol_minor": 0,
+  "message_type": "Stop",
+  "request_id": "c-1",
+  "run_id": "run-1",
+  "worker_id": "worker-1",
+  "worker_epoch": "1",
+  "sequence": "1",
+  "correlation": null,
+  "payload": {
+    "reason": "normal stop"
+  }
+}

@@ -1,0 +1,10 @@
+if(WIN32)
+    add_executable(vision-capture-demo main.cpp)
+    target_link_libraries(vision-capture-demo PRIVATE vision_capture_qt)
+    vision_configure_target(vision-capture-demo)
+    add_dependencies(vision-capture-demo vision-worker-host vision-sim-camera)
+    foreach(component IN ITEMS Core Network)
+        add_custom_command(TARGET vision-capture-demo POST_BUILD COMMAND ${CMAKE_COMMAND} -E copy_if_different
+            "$<TARGET_FILE:Qt6::${component}>" "$<TARGET_FILE_DIR:vision-capture-demo>")
+    endforeach()
+endif()

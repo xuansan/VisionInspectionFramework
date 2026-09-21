@@ -1,0 +1,15 @@
+{
+  "schema_version": 1, "sdk_api_version": 1,
+  "plugin_id": "vision.onnx-algorithm", "plugin_version": "0.1.0",
+  "kind": "Algorithm", "build_id": "onnx-algorithm-v1",
+  "platform": "windows", "architecture": "x64", "compiler_abi": "msvc-v143-md",
+  "runtime_variant": "Release", "entry_library": "vision-onnx-algorithm.dll",
+  "capabilities": ["onnx-cpu", "detection", "classification", "instance-segmentation", "shared-image"],
+  "threading_model": "Serialized", "max_instances": 1,
+  "parameters_schema": {
+    "type": "object",
+    "properties": {"config": {"type": "string", "maxLength": 4096}, "mask_root": {"type": "string", "maxLength": 4096}},
+    "required": ["config"], "additionalProperties": false
+  },
+  "dependencies": [], "license_metadata": {"spdx": "NOASSERTION", "file": "LICENSE.txt"}
+}

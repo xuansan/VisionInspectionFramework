@@ -1,0 +1,46 @@
+{
+  "version": 6,
+  "cmakeMinimumRequired": {"major": 3, "minor": 25, "patch": 0},
+  "configurePresets": [
+    {
+      "name": "windows-core",
+      "generator": "Visual Studio 17 2022",
+      "architecture": "x64",
+      "toolset": "v143",
+      "binaryDir": "${sourceDir}/out/build/${presetName}",
+      "cacheVariables": {"BUILD_TESTING": "ON", "VISION_BUILD_GUI": "OFF", "VISION_BUILD_LOCAL_IPC": "OFF"}
+    },
+    {
+      "name": "windows-gui",
+      "inherits": "windows-core",
+      "binaryDir": "${sourceDir}/out/build/${presetName}",
+      "cacheVariables": {"VISION_BUILD_GUI": "ON", "VISION_USE_LOCAL_SDK": "ON", "VISION_BUILD_LOCAL_IPC": "ON"}
+    },
+    {
+      "name": "windows-ipc",
+      "inherits": "windows-core",
+      "binaryDir": "${sourceDir}/out/build/${presetName}",
+      "cacheVariables": {"VISION_USE_LOCAL_SDK": "ON", "VISION_BUILD_LOCAL_IPC": "ON"}
+    },
+    {
+      "name": "linux-core",
+      "generator": "Ninja",
+      "binaryDir": "${sourceDir}/out/build/${presetName}",
+      "cacheVariables": {
+        "CMAKE_BUILD_TYPE": "Release", "BUILD_TESTING": "ON", "VISION_BUILD_GUI": "OFF"
+      }
+    }
+  ],
+  "buildPresets": [
+    {"name": "windows-core", "configurePreset": "windows-core", "configuration": "Release"},
+    {"name": "windows-gui", "configurePreset": "windows-gui", "configuration": "Release"},
+    {"name": "windows-ipc", "configurePreset": "windows-ipc", "configuration": "Release"},
+    {"name": "linux-core", "configurePreset": "linux-core"}
+  ],
+  "testPresets": [
+    {"name": "windows-core", "configurePreset": "windows-core", "configuration": "Release", "output": {"outputOnFailure": true}},
+    {"name": "windows-gui", "configurePreset": "windows-gui", "configuration": "Release", "output": {"outputOnFailure": true}},
+    {"name": "windows-ipc", "configurePreset": "windows-ipc", "configuration": "Release", "output": {"outputOnFailure": true}},
+    {"name": "linux-core", "configurePreset": "linux-core", "output": {"outputOnFailure": true}}
+  ]
+}

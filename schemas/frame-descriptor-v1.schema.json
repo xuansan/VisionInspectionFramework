@@ -1,0 +1,29 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "FrameDescriptor v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema_version","run_id","pool_id","worker_id","worker_epoch","slot_id","slot_generation","lease_id","frame_id","width","height","stride","offset","length","pixel_format"],
+  "$defs": {
+    "id": {"type":"string","minLength":1,"maxLength":128,"pattern":"^[A-Za-z0-9_.:-]+$"},
+    "u64": {"type":"string","pattern":"^(0|[1-9][0-9]{0,19})$","description":"C++ semantic validation additionally checks uint64 maximum."},
+    "positive": {"type":"string","pattern":"^[1-9][0-9]{0,19}$"}
+  },
+  "properties": {
+    "schema_version":{"const":1},
+    "run_id":{"$ref":"#/$defs/id"},
+    "pool_id":{"$ref":"#/$defs/id"},
+    "worker_id":{"$ref":"#/$defs/id"},
+    "worker_epoch":{"$ref":"#/$defs/positive"},
+    "slot_id":{"$ref":"#/$defs/u64","description":"C++ semantic validation additionally limits slot_id to uint32."},
+    "slot_generation":{"$ref":"#/$defs/positive"},
+    "lease_id":{"$ref":"#/$defs/positive"},
+    "frame_id":{"$ref":"#/$defs/id"},
+    "width":{"type":"integer","minimum":1,"maximum":4294967295},
+    "height":{"type":"integer","minimum":1,"maximum":4294967295},
+    "stride":{"$ref":"#/$defs/positive"},
+    "offset":{"$ref":"#/$defs/u64"},
+    "length":{"$ref":"#/$defs/positive"},
+    "pixel_format":{"enum":["Mono8","RGB8","BGR8"]}
+  }
+}

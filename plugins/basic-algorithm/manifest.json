@@ -1,0 +1,21 @@
+{
+  "schema_version": 1, "sdk_api_version": 1,
+  "plugin_id": "vision.basic-algorithm", "plugin_version": "0.1.0",
+  "kind": "Algorithm", "build_id": "basic-algorithm-v1",
+  "platform": "windows", "architecture": "x64", "compiler_abi": "msvc-v143-md",
+  "runtime_variant": "Release", "entry_library": "vision-basic-algorithm.dll",
+  "capabilities": ["brightness", "shared-image", "fault-injection"],
+  "threading_model": "Serialized", "max_instances": 1,
+  "parameters_schema": {
+    "type": "object",
+    "properties": {
+      "minimum": {"type": "integer", "minimum": 0, "maximum": 255},
+      "maximum": {"type": "integer", "minimum": 0, "maximum": 255},
+      "fault": {"type": "string", "enum": ["none", "delay", "hang", "crash"]},
+      "delay_ms": {"type": "integer", "minimum": 0, "maximum": 10000}
+    },
+    "additionalProperties": false
+  },
+  "dependencies": [],
+  "license_metadata": {"spdx": "NOASSERTION", "file": "LICENSE.txt"}
+}

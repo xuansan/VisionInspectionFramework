@@ -1,0 +1,12 @@
+cmake_minimum_required(VERSION 3.25)
+project(vision_installed_sdk_check LANGUAGES CXX)
+include("${CMAKE_CURRENT_SOURCE_DIR}/../../开发环境/cmake/VisionEnvironment.cmake")
+find_package(CURL CONFIG REQUIRED)
+add_executable(installed_sdk_check main.cpp)
+target_compile_features(installed_sdk_check PRIVATE cxx_std_20)
+target_compile_options(installed_sdk_check PRIVATE /utf-8 /EHsc)
+target_link_libraries(installed_sdk_check PRIVATE VisionEnv::SQLite VisionEnv::Json
+    VisionEnv::Spdlog VisionEnv::Doctest VisionEnv::HttpLib VisionEnv::ONNXRuntime CURL::libcurl)
+visionenv_deploy_onnxruntime(installed_sdk_check)
+enable_testing()
+add_test(NAME installed_sdk_consumer COMMAND installed_sdk_check)

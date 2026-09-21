@@ -1,0 +1,4 @@
+add_library(vision_serialization STATIC json_codec.cpp)
+target_include_directories(vision_serialization PUBLIC "${CMAKE_CURRENT_SOURCE_DIR}/include")
+target_link_libraries(vision_serialization PUBLIC vision_contracts vision_inspection PRIVATE vision_json)
+vision_configure_target(vision_serialization)

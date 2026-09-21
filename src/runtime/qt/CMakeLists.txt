@@ -1,0 +1,4 @@
+add_library(vision_runtime_qt STATIC process_host.cpp)
+target_include_directories(vision_runtime_qt PUBLIC "${CMAKE_CURRENT_SOURCE_DIR}/include")
+target_link_libraries(vision_runtime_qt PUBLIC vision_runtime vision_ipc_qt)
+vision_configure_target(vision_runtime_qt)

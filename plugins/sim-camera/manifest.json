@@ -1,0 +1,35 @@
+{
+  "schema_version": 1,
+  "sdk_api_version": 1,
+  "plugin_id": "vision.sim-camera",
+  "plugin_version": "0.1.0",
+  "kind": "Camera",
+  "build_id": "sim-camera-v1",
+  "platform": "windows",
+  "architecture": "x64",
+  "compiler_abi": "msvc-v143-md",
+  "runtime_variant": "Release",
+  "entry_library": "vision-sim-camera.dll",
+  "capabilities": ["synthetic", "pgm", "ppm", "fault-injection"],
+  "threading_model": "Serialized",
+  "max_instances": 1,
+  "parameters_schema": {
+    "type": "object",
+    "properties": {
+      "source": {"type": "string", "enum": ["synthetic", "fixed", "sequence"]},
+      "root": {"type": "string"},
+      "files_json": {"type": "string"},
+      "pixel_hash": {"type": "string"},
+      "width": {"type": "integer", "minimum": 1, "maximum": 4096},
+      "height": {"type": "integer", "minimum": 1, "maximum": 4096},
+      "channels": {"type": "integer", "enum": [1, 3]},
+      "seed": {"type": "integer", "minimum": 0, "maximum": 4294967295},
+      "fault": {"type": "string", "enum": ["none", "delay", "missing", "duplicate", "out_of_order", "disconnect", "crash"]},
+      "fault_at": {"type": "string"},
+      "delay_ms": {"type": "integer", "minimum": 0, "maximum": 10000}
+    },
+    "additionalProperties": false
+  },
+  "dependencies": [],
+  "license_metadata": {"spdx": "NOASSERTION", "file": "LICENSE.txt"}
+}

@@ -1,0 +1,18 @@
+{
+  "skill_version": "0.1.0",
+  "framework_version": "0.2.0",
+  "validated_platform": "Windows x64 / MSVC v143 dynamic CRT / Release / Qt 6.8.3",
+  "interface_sha256": {
+    "CMakeLists.txt": "a07de927ffa38612d24c03d0cee00fb97bf5f56ef1bf57c0d17528346dc9dd70",
+    "cmake/Extensions.cmake": "3337ec80ba6d7e60b163f76a01869560c5f94500d8993ab228c122021831ea1c",
+    "cmake/Demo.cmake": "aa3d3e1e785b08f67f3697cfafb31f459e9969288eb653c3a7995675efc1551c",
+    "src/plugin_sdk/include/vision/plugin_sdk/api.hpp": "eafc15330cb70b3808a54e1de28db136cdacbb260b5660586ddb9a0979d50719",
+    "src/application/qt/include/vision/application/qt/demo_runner.hpp": "be7aef700b809e96a2b192482e6bea138ec0eadd05137e743668ce640a1c9a26",
+    "src/application/qt/include/vision/application/qt/dispatcher.hpp": "35891441d68c447e0e31fc02e97bf14bca891af467148fd5e4a33ddefd93ef3b",
+    "src/contracts/include/vision/contracts/types.hpp": "e982fe2ed8c94ee33a990eb351a94c112f01f54a6d8fcc901969acfb4ab54401",
+    "src/application/qt/include/vision/application/qt/station.hpp": "690ebb9159da866b613c70b060a6379eb670663e0dae7b49b384e900b787e680",
+    "src/application/qt/include/vision/application/qt/durable_session.hpp": "86ba9aab957c05fa0a8c002a0e1009899fa894edca6410f8ce61be2a164a3bde",
+    "src/serialization/include/vision/serialization/json_codec.hpp": "8051bfceb77cbbbac1c51f33f6db3f6036c37f621311b82745b78e07de154847",
+    "cmake/ProjectOptions.cmake": "0667c4ce81a31b222f214697b28add8a8cc3640b65ead96aa4cec836a007ebc9"
+  }
+}

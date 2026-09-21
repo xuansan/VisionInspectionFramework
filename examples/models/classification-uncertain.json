@@ -1,0 +1,20 @@
+{
+  "schema_version": 1,
+  "model": "classification.onnx",
+  "model_hash": "sha256:d7306f0c0f9b04dea492a15cc09bce7b7c80aff27baf20f2888a21418376102f",
+  "type": "classification",
+  "input": "images",
+  "output": "output0",
+  "labels": [
+    "good",
+    "scratch",
+    "spot"
+  ],
+  "width": 8,
+  "height": 8,
+  "max_results": 64,
+  "score": 0.99,
+  "iou": 0.45,
+  "scores": "logits",
+  "ok_label": "good"
+}

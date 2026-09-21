@@ -1,0 +1,6 @@
+if(WIN32)
+    add_library(vision_frame_transport STATIC windows_mapping.cpp)
+    target_include_directories(vision_frame_transport PUBLIC "${CMAKE_CURRENT_SOURCE_DIR}/include")
+    target_link_libraries(vision_frame_transport PUBLIC vision_contracts)
+    vision_configure_target(vision_frame_transport)
+endif()

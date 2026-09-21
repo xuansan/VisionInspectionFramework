@@ -1,0 +1,135 @@
+{
+  "schema_version": 1,
+  "recorded_on": "2026-09-18",
+  "purpose": "Version and artifact provenance baseline; not a universal installer or release SBOM",
+  "artifacts": [
+    {
+      "name": "opencv",
+      "version": "4.12.0",
+      "url": "https://github.com/opencv/opencv/releases/download/4.12.0/opencv-4.12.0-windows.exe",
+      "sha256": "b753b14d880b9bc8d89d6acd3b665c040baec0211078435432fcae117db707af",
+      "verification": "GitHub release API SHA256 matched",
+      "scope": "selected-future-worker-or-dev-tool"
+    },
+    {
+      "name": "onnxruntime",
+      "version": "1.30.0",
+      "url": "https://github.com/microsoft/onnxruntime/releases/download/v1.30.0/onnxruntime-win-x64-1.30.0.zip",
+      "sha256": "c6ba983baf5681af108599675d2a89c2d145512d02de28aed0bff177cd0ba949",
+      "verification": "GitHub release API SHA256 matched",
+      "scope": "selected-future-worker-or-dev-tool"
+    },
+    {
+      "name": "sqlite",
+      "version": "3.53.4",
+      "url": "https://www.sqlite.org/2026/sqlite-amalgamation-3530400.zip",
+      "sha256": "1e71ddf93849c6a6ecf58b827c0692073d2dd7ee40196158068f7b29f422e87d",
+      "verification": "sqlite.org SHA3-256 matched",
+      "scope": "selected-future-worker-or-dev-tool"
+    },
+    {
+      "name": "sqlite-tools",
+      "version": "3.53.4",
+      "url": "https://www.sqlite.org/2026/sqlite-tools-win-x64-3530400.zip",
+      "sha256": "f46ee2475de4cbe287e6e5f7d43c838796b14e7379cd216bdbb28d391429f9fc",
+      "verification": "sqlite.org SHA3-256 matched",
+      "scope": "selected-future-worker-or-dev-tool"
+    },
+    {
+      "name": "rustfs",
+      "version": "1.0.0",
+      "url": "https://github.com/rustfs/rustfs/releases/download/1.0.0/rustfs-windows-x86_64-v1.0.0.zip",
+      "sha256": "4ccf5858ce8e6f70f01af2394c8cc0e0878ee77faa6c20d3179153476554b7d8",
+      "verification": "GitHub release API SHA256 matched",
+      "scope": "selected-future-worker-or-dev-tool"
+    },
+    {
+      "name": "json",
+      "version": "3.12.0",
+      "url": "https://codeload.github.com/nlohmann/json/zip/refs/tags/v3.12.0",
+      "sha256": "34660b5e9a407195d55e8da705ed26cc6d175ce5a6b1fb957e701fb4d5b04022",
+      "verification": "HTTPS source archive; local SHA256 recorded (not publisher-attested)",
+      "scope": "active-serialization-source"
+    },
+    {
+      "name": "spdlog",
+      "version": "1.17.0",
+      "url": "https://codeload.github.com/gabime/spdlog/zip/refs/tags/v1.17.0",
+      "sha256": "b11912a82d149792fef33fabd0503b13d54aeac25c1464755461d4108ea71fc2",
+      "verification": "HTTPS source archive; local SHA256 recorded (not publisher-attested)",
+      "scope": "selected-future-worker-or-dev-tool"
+    },
+    {
+      "name": "doctest",
+      "version": "2.5.3",
+      "url": "https://codeload.github.com/doctest/doctest/zip/refs/tags/v2.5.3",
+      "sha256": "5ddeafa34bece65b9f2e5207186fa70cd8ca44c00f41ae2c25e6e50b427c2b79",
+      "verification": "HTTPS source archive; local SHA256 recorded (not publisher-attested)",
+      "scope": "active-test"
+    },
+    {
+      "name": "cpp-httplib",
+      "version": "0.56.0",
+      "url": "https://codeload.github.com/yhirose/cpp-httplib/zip/refs/tags/v0.56.0",
+      "sha256": "a8c0ed8e198b71eed9ef55e9a69de31be13b9519959fac4d20abbe60a828fa45",
+      "verification": "HTTPS source archive; local SHA256 recorded (not publisher-attested)",
+      "scope": "selected-future-worker-or-dev-tool"
+    },
+    {
+      "name": "curl",
+      "version": "8.22.0",
+      "url": "https://curl.se/download/curl-8.22.0.tar.xz",
+      "sha256": "f7ef3ae8a22e521f289803fe93543eb64c329b58aa73a9e224dfd915a2a5f4f7",
+      "verification": "Official curl GitHub release SHA256 matched",
+      "scope": "selected-future-worker-or-dev-tool"
+    },
+    {
+      "name": "qt-qtbase-Windows-Windows_11_23H2-MSVC2022-Windows-Windows_11_23H2-X86_64.7z",
+      "version": "6.8.3-bundle",
+      "url": "https://download.qt.io/online/qtsdkrepository/windows_x86/desktop/qt6_683/qt6_683/qt.qt6.683.win64_msvc2022_64/6.8.3-0-202503201308qtbase-Windows-Windows_11_23H2-MSVC2022-Windows-Windows_11_23H2-X86_64.7z",
+      "sha256": "41688269fac0565db956c66d9eecae777d16197e0c02cd81b88640c1f5d73d3f",
+      "verification": "Official Metalink SHA256 matched",
+      "scope": "windows-gui-development-or-corresponding-source"
+    },
+    {
+      "name": "qt-d3dcompiler_47-x64.7z",
+      "version": "6.8.3-bundle",
+      "url": "https://download.qt.io/online/qtsdkrepository/windows_x86/desktop/qt6_683/qt6_683/qt.qt6.683.win64_msvc2022_64/6.8.3-0-202503201308d3dcompiler_47-x64.7z",
+      "sha256": "f886f3255600d46b3e651ab5cb8084b42df5e59f78993ad43d8b0cb3b70552c3",
+      "verification": "Official Metalink SHA256 matched",
+      "scope": "windows-gui-development-or-corresponding-source"
+    },
+    {
+      "name": "qt-opengl32sw-64-mesa_11_2_2-signed_sha256.7z",
+      "version": "6.8.3-bundle",
+      "url": "https://download.qt.io/online/qtsdkrepository/windows_x86/desktop/qt6_683/qt6_683/qt.qt6.683.win64_msvc2022_64/6.8.3-0-202503201308opengl32sw-64-mesa_11_2_2-signed_sha256.7z",
+      "sha256": "b3e65312ca58e3ea3853eb5af7893a9fb26887b05bc6a1ccc706f88f9f971aeb",
+      "verification": "Official Metalink SHA256 matched",
+      "scope": "windows-gui-development-or-corresponding-source"
+    },
+    {
+      "name": "qt-qtbase-everywhere-src-6.8.3.tar.xz",
+      "version": "6.8.3-bundle",
+      "url": "https://download.qt.io/archive/qt/6.8/6.8.3/submodules/qtbase-everywhere-src-6.8.3.tar.xz",
+      "sha256": "56001b905601bb9023d399f3ba780d7fa940f3e4861e496a7c490331f49e0b80",
+      "verification": "Official Metalink SHA256 matched",
+      "scope": "windows-gui-development-or-corresponding-source"
+    },
+    {
+      "name": "doctest-single-header",
+      "version": "2.5.3",
+      "url": "https://raw.githubusercontent.com/doctest/doctest/v2.5.3/doctest/doctest.h",
+      "sha256": "cfd518a3ef90f67e1f3ba514df23fb3627437de1a2feeba78cf5062a40021421",
+      "verification": "Matches local installed header; enforced by cmake/Testing.cmake",
+      "scope": "active-test"
+    },
+    {
+      "name": "json-single-header",
+      "version": "3.12.0",
+      "url": "https://raw.githubusercontent.com/nlohmann/json/v3.12.0/single_include/nlohmann/json.hpp",
+      "sha256": "aaf127c04cb31c406e5b04a63f1ae89369fccde6d8fa7cdda1ed4f32dfc5de63",
+      "verification": "Matches locally verified installed header; enforced by cmake/Json.cmake",
+      "scope": "active-serialization"
+    }
+  ]
+}

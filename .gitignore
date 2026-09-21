@@ -1,0 +1,12 @@
+/out/
+/build/
+/reference-*/
+/开发环境/
+/.vs/
+/CMakeUserPresets.json
+*.user
+*.suo
+.env
+.env.*
+!.env.example
+*.dmp

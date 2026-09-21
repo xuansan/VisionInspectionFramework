@@ -1,0 +1,4 @@
+Project license selection is pending.
+This file does not grant a new license or select one on behalf of the maintainer.
+The manifest uses NOASSERTION. Resolve the project license and dependency
+distribution requirements before publishing a release.

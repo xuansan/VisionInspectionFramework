@@ -1,0 +1,19 @@
+{
+  "profile_schema_version": 1,
+  "profile_id": "dual-camera-functional",
+  "purpose": "development-target-not-production-guarantee",
+  "mode": "Demo",
+  "camera_count": 2,
+  "frames_per_camera_per_workpiece": 1,
+  "width": 1024,
+  "height": 768,
+  "pixel_format": "Mono8",
+  "workpieces_per_second": 10,
+  "max_inflight_workpieces": 8,
+  "frame_slots_per_camera": 16,
+  "inspection_deadline_ms": 1000,
+  "control_message_max_bytes": 1048576,
+  "output_queue_max_events": 256,
+  "output_queue_max_bytes": 8388608,
+  "allow_real_device_side_effects": false
+}

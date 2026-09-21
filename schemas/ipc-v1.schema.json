@@ -1,0 +1,1980 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Vision local IPC protocol 1.0",
+  "type": "object",
+  "properties": {
+    "protocol_major": {
+      "type": "integer",
+      "const": 1
+    },
+    "protocol_minor": {
+      "type": "integer",
+      "const": 0
+    },
+    "message_type": {
+      "enum": [
+        "Hello",
+        "Configure",
+        "Ready",
+        "SubmitTask",
+        "DeviceTask",
+        "DeviceFinished",
+        "TaskAccepted",
+        "CaptureTask",
+        "InspectTask",
+        "CaptureFinished",
+        "TaskProgress",
+        "TaskFinished",
+        "Cancel",
+        "Heartbeat",
+        "Fault",
+        "Drain",
+        "Stop",
+        "LeaseRelease",
+        "ResultEvent",
+        "DeliveryReport",
+        "DeliveryTask",
+        "DeliveryFinished",
+        "CheckFinished"
+      ]
+    },
+    "request_id": {
+      "type": "string",
+      "pattern": "^[A-Za-z0-9_.:-]{1,128}$"
+    },
+    "run_id": {
+      "type": "string",
+      "pattern": "^[A-Za-z0-9_.:-]{1,128}$"
+    },
+    "worker_id": {
+      "type": "string",
+      "pattern": "^[A-Za-z0-9_.:-]{1,128}$"
+    },
+    "worker_epoch": {
+      "type": "string",
+      "pattern": "^[1-9][0-9]{0,19}$",
+      "description": "Canonical decimal uint64. Reader additionally enforces <=18446744073709551615."
+    },
+    "sequence": {
+      "type": "string",
+      "pattern": "^[1-9][0-9]{0,19}$",
+      "description": "Canonical decimal uint64. Reader additionally enforces <=18446744073709551615."
+    },
+    "correlation": {
+      "oneOf": [
+        {
+          "type": "null"
+        },
+        {
+          "$ref": "#/$defs/correlation"
+        }
+      ]
+    },
+    "payload": {
+      "type": "object"
+    }
+  },
+  "required": [
+    "protocol_major",
+    "protocol_minor",
+    "message_type",
+    "request_id",
+    "run_id",
+    "worker_id",
+    "worker_epoch",
+    "sequence",
+    "correlation",
+    "payload"
+  ],
+  "additionalProperties": false,
+  "$defs": {
+    "correlation": {
+      "type": "object",
+      "properties": {
+        "run_id": {
+          "type": "string",
+          "pattern": "^[A-Za-z0-9_.:-]{1,128}$"
+        },
+        "worker_id": {
+          "type": "string",
+          "pattern": "^[A-Za-z0-9_.:-]{1,128}$"
+        },
+        "worker_epoch": {
+          "type": "string",
+          "pattern": "^[1-9][0-9]{0,19}$",
+          "description": "Canonical decimal uint64. Reader additionally enforces <=18446744073709551615."
+        },
+        "inspection_id": {
+          "type": "string",
+          "pattern": "^[A-Za-z0-9_.:-]{1,128}$"
+        },
+        "check_id": {
+          "type": "string",
+          "pattern": "^[A-Za-z0-9_.:-]{1,128}$"
+        },
+        "task_id": {
+          "type": "string",
+          "pattern": "^[A-Za-z0-9_.:-]{1,128}$"
+        },
+        "attempt": {
+          "type": "string",
+          "pattern": "^[1-9][0-9]{0,19}$",
+          "description": "Canonical decimal uint64. Reader additionally enforces <=18446744073709551615."
+        }
+      },
+      "required": [
+        "run_id",
+        "worker_id",
+        "worker_epoch",
+        "inspection_id",
+        "check_id",
+        "task_id",
+        "attempt"
+      ],
+      "additionalProperties": false
+    },
+    "error": {
+      "type": "object",
+      "properties": {
+        "code": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 128,
+          "pattern": "^[^\\u0000]+$"
+        },
+        "category": {
+          "enum": [
+            "Configuration",
+            "Protocol",
+            "Device",
+            "Execution",
+            "Resource",
+            "Persistence",
+            "Delivery",
+            "Internal"
+          ]
+        },
+        "message": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 2048,
+          "pattern": "^[^\\u0000]+$"
+        },
+        "retryability": {
+          "enum": [
+            "Never",
+            "AfterRecovery",
+            "Safe"
+          ]
+        },
+        "origin": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 128,
+          "pattern": "^[^\\u0000]+$"
+        },
+        "correlation": {
+          "$ref": "#/$defs/correlation"
+        },
+        "vendor_code": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 256,
+          "pattern": "^[^\\u0000]+$"
+        }
+      },
+      "required": [
+        "code",
+        "category",
+        "message",
+        "retryability",
+        "origin"
+      ],
+      "additionalProperties": false
+    },
+    "defect": {
+      "type": "object",
+      "properties": {
+        "class_id": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 2147483647
+        },
+        "label": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 256,
+          "pattern": "^[^\\u0000]+$"
+        },
+        "score": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 1
+        },
+        "box_xyxy": {
+          "type": "array",
+          "items": {
+            "type": "number",
+            "minimum": 0
+          },
+          "maxItems": 4,
+          "minItems": 4
+        },
+        "coordinate_space": {
+          "const": "original_pixels"
+        }
+      },
+      "required": [
+        "class_id",
+        "label",
+        "score",
+        "box_xyxy",
+        "coordinate_space"
+      ],
+      "additionalProperties": false
+    },
+    "measurement": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 128,
+          "pattern": "^[^\\u0000]+$"
+        },
+        "value": {
+          "type": "number"
+        },
+        "unit": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 32,
+          "pattern": "^[^\\u0000]+$"
+        }
+      },
+      "required": [
+        "name",
+        "value",
+        "unit"
+      ],
+      "additionalProperties": false
+    },
+    "check": {
+      "type": "object",
+      "properties": {
+        "correlation": {
+          "$ref": "#/$defs/correlation"
+        },
+        "execution_state": {
+          "enum": [
+            "Succeeded",
+            "Failed",
+            "Cancelled",
+            "TimedOut"
+          ]
+        },
+        "quality": {
+          "enum": [
+            "Unknown",
+            "OK",
+            "NG"
+          ]
+        },
+        "defects": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/defect"
+          },
+          "maxItems": 4096,
+          "minItems": 0
+        },
+        "measurements": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/measurement"
+          },
+          "maxItems": 256,
+          "minItems": 0
+        },
+        "elapsed_ns": {
+          "type": "string",
+          "pattern": "^(0|[1-9][0-9]{0,19})$",
+          "description": "Canonical decimal uint64. Reader additionally enforces <=18446744073709551615."
+        },
+        "classification": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 256,
+          "pattern": "^[^\\u0000]+$"
+        },
+        "error": {
+          "$ref": "#/$defs/error"
+        },
+        "model_hash": {
+          "type": "string",
+          "pattern": "^sha256:[a-f0-9]{64}$"
+        },
+        "masks": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "hash": {
+                "type": "string",
+                "pattern": "^sha256:[a-f0-9]{64}$"
+              },
+              "width": {
+                "type": "integer",
+                "minimum": 1,
+                "maximum": 1048576
+              },
+              "height": {
+                "type": "integer",
+                "minimum": 1,
+                "maximum": 1048576
+              },
+              "instance": {
+                "type": "integer",
+                "minimum": 0,
+                "maximum": 63
+              },
+              "storage": {
+                "const": "local_ephemeral"
+              }
+            },
+            "required": [
+              "hash",
+              "width",
+              "height",
+              "instance",
+              "storage"
+            ],
+            "additionalProperties": false
+          },
+          "maxItems": 64,
+          "minItems": 0
+        }
+      },
+      "required": [
+        "correlation",
+        "execution_state",
+        "quality",
+        "defects",
+        "measurements",
+        "elapsed_ns"
+      ],
+      "additionalProperties": false,
+      "allOf": [
+        {
+          "if": {
+            "properties": {
+              "execution_state": {
+                "const": "Succeeded"
+              }
+            }
+          },
+          "then": {
+            "properties": {
+              "quality": {
+                "enum": [
+                  "OK",
+                  "NG"
+                ]
+              }
+            },
+            "not": {
+              "required": [
+                "error"
+              ]
+            }
+          },
+          "else": {
+            "properties": {
+              "quality": {
+                "const": "Unknown"
+              }
+            },
+            "required": [
+              "error"
+            ]
+          }
+        }
+      ]
+    },
+    "result": {
+      "type": "object",
+      "properties": {
+        "run_id": {
+          "type": "string",
+          "pattern": "^[A-Za-z0-9_.:-]{1,128}$"
+        },
+        "inspection_id": {
+          "type": "string",
+          "pattern": "^[A-Za-z0-9_.:-]{1,128}$"
+        },
+        "workpiece_id": {
+          "type": "string",
+          "pattern": "^[A-Za-z0-9_.:-]{1,128}$"
+        },
+        "station_id": {
+          "type": "string",
+          "pattern": "^[A-Za-z0-9_.:-]{1,128}$"
+        },
+        "mode": {
+          "enum": [
+            "Demo",
+            "Replay",
+            "Production"
+          ]
+        },
+        "recipe_hash": {
+          "type": "string",
+          "pattern": "^sha256:[a-f0-9]{64}$"
+        },
+        "execution_state": {
+          "enum": [
+            "Completed",
+            "Failed",
+            "Cancelled",
+            "TimedOut"
+          ]
+        },
+        "quality": {
+          "enum": [
+            "Unknown",
+            "OK",
+            "NG"
+          ]
+        },
+        "expected_checks": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "check_id": {
+                "type": "string",
+                "pattern": "^[A-Za-z0-9_.:-]{1,128}$"
+              },
+              "required": {
+                "type": "boolean"
+              }
+            },
+            "required": [
+              "check_id",
+              "required"
+            ],
+            "additionalProperties": false
+          },
+          "maxItems": 64,
+          "minItems": 1
+        },
+        "checks": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/check"
+          },
+          "maxItems": 64,
+          "minItems": 0
+        },
+        "reason": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 2048,
+          "pattern": "^[^\\u0000]+$"
+        }
+      },
+      "required": [
+        "run_id",
+        "inspection_id",
+        "workpiece_id",
+        "station_id",
+        "mode",
+        "recipe_hash",
+        "execution_state",
+        "quality",
+        "expected_checks",
+        "checks",
+        "reason"
+      ],
+      "additionalProperties": false,
+      "allOf": [
+        {
+          "if": {
+            "properties": {
+              "execution_state": {
+                "const": "Completed"
+              }
+            }
+          },
+          "then": {
+            "properties": {
+              "quality": {
+                "enum": [
+                  "OK",
+                  "NG"
+                ]
+              }
+            }
+          },
+          "else": {
+            "properties": {
+              "quality": {
+                "const": "Unknown"
+              }
+            }
+          }
+        }
+      ]
+    },
+    "event": {
+      "type": "object",
+      "properties": {
+        "schema_version": {
+          "const": 1
+        },
+        "event_type": {
+          "const": "inspection.finalized"
+        },
+        "event_id": {
+          "type": "string",
+          "pattern": "^[A-Za-z0-9_.:-]{1,128}$"
+        },
+        "sequence": {
+          "type": "string",
+          "pattern": "^(0|[1-9][0-9]{0,19})$",
+          "description": "Canonical decimal uint64. Reader additionally enforces <=18446744073709551615."
+        },
+        "emitted_at_unix_ns": {
+          "type": "string",
+          "pattern": "^(0|[1-9][0-9]{0,19})$",
+          "description": "Canonical decimal uint64. Reader additionally enforces <=18446744073709551615."
+        },
+        "result": {
+          "$ref": "#/$defs/result"
+        }
+      },
+      "required": [
+        "schema_version",
+        "event_type",
+        "event_id",
+        "sequence",
+        "emitted_at_unix_ns",
+        "result"
+      ],
+      "additionalProperties": false
+    }
+  },
+  "allOf": [
+    {
+      "if": {
+        "properties": {
+          "message_type": {
+            "const": "Hello"
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "payload": {
+            "type": "object",
+            "properties": {
+              "token": {
+                "type": "string",
+                "minLength": 32,
+                "maxLength": 128,
+                "pattern": "^[^\\u0000]+$"
+              },
+              "required_capabilities": {
+                "type": "array",
+                "items": {
+                  "type": "string",
+                  "pattern": "^[A-Za-z0-9_.:-]{1,128}$"
+                },
+                "maxItems": 32,
+                "minItems": 0,
+                "uniqueItems": true
+              }
+            },
+            "required": [
+              "token",
+              "required_capabilities"
+            ],
+            "additionalProperties": false
+          },
+          "correlation": {
+            "type": "null"
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "message_type": {
+            "const": "Configure"
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "payload": {
+            "type": "object",
+            "properties": {
+              "recipe_hash": {
+                "type": "string",
+                "pattern": "^sha256:[a-f0-9]{64}$"
+              },
+              "config_revision": {
+                "type": "string",
+                "pattern": "^[1-9][0-9]{0,19}$",
+                "description": "Canonical decimal uint64. Reader additionally enforces <=18446744073709551615."
+              }
+            },
+            "required": [
+              "recipe_hash",
+              "config_revision"
+            ],
+            "additionalProperties": false
+          },
+          "correlation": {
+            "type": "null"
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "message_type": {
+            "const": "Ready"
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "payload": {
+            "type": "object",
+            "properties": {
+              "recipe_hash": {
+                "type": "string",
+                "pattern": "^sha256:[a-f0-9]{64}$"
+              },
+              "config_revision": {
+                "type": "string",
+                "pattern": "^[1-9][0-9]{0,19}$",
+                "description": "Canonical decimal uint64. Reader additionally enforces <=18446744073709551615."
+              }
+            },
+            "required": [
+              "recipe_hash",
+              "config_revision"
+            ],
+            "additionalProperties": false
+          },
+          "correlation": {
+            "type": "null"
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "message_type": {
+            "const": "SubmitTask"
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "payload": {
+            "type": "object",
+            "properties": {
+              "operation": {
+                "enum": [
+                  "Inspect",
+                  "Capture",
+                  "Persist"
+                ]
+              },
+              "input_ref": {
+                "type": "string",
+                "pattern": "^[A-Za-z0-9_.:-]{1,128}$"
+              },
+              "budget_ns": {
+                "type": "string",
+                "pattern": "^[1-9][0-9]{0,19}$",
+                "description": "Canonical decimal uint64. Reader additionally enforces <=18446744073709551615."
+              }
+            },
+            "required": [
+              "operation",
+              "input_ref",
+              "budget_ns"
+            ],
+            "additionalProperties": false
+          },
+          "correlation": {
+            "$ref": "#/$defs/correlation"
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "message_type": {
+            "const": "DeviceTask"
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "payload": {
+            "oneOf": [
+              {
+                "type": "object",
+                "properties": {
+                  "session_id": {
+                    "type": "string",
+                    "pattern": "^[A-Za-z0-9_.:-]{1,128}$"
+                  },
+                  "command_sequence": {
+                    "type": "string",
+                    "pattern": "^[1-9][0-9]{0,19}$",
+                    "description": "Canonical decimal uint64. Reader additionally enforces <=18446744073709551615."
+                  },
+                  "ready": {
+                    "type": "boolean"
+                  },
+                  "arrival": {
+                    "type": "boolean"
+                  },
+                  "position": {
+                    "type": "boolean"
+                  },
+                  "safety_ok": {
+                    "type": "boolean"
+                  },
+                  "result_id": {
+                    "type": "null"
+                  },
+                  "quality": {
+                    "const": "Unknown"
+                  }
+                },
+                "required": [
+                  "session_id",
+                  "command_sequence",
+                  "ready",
+                  "arrival",
+                  "position",
+                  "safety_ok",
+                  "result_id",
+                  "quality"
+                ],
+                "additionalProperties": false
+              },
+              {
+                "type": "object",
+                "properties": {
+                  "session_id": {
+                    "type": "string",
+                    "pattern": "^[A-Za-z0-9_.:-]{1,128}$"
+                  },
+                  "command_sequence": {
+                    "type": "string",
+                    "pattern": "^[1-9][0-9]{0,19}$",
+                    "description": "Canonical decimal uint64. Reader additionally enforces <=18446744073709551615."
+                  },
+                  "ready": {
+                    "type": "boolean"
+                  },
+                  "arrival": {
+                    "type": "boolean"
+                  },
+                  "position": {
+                    "type": "boolean"
+                  },
+                  "safety_ok": {
+                    "type": "boolean"
+                  },
+                  "result_id": {
+                    "type": "string",
+                    "pattern": "^[A-Za-z0-9_.:-]{1,128}$"
+                  },
+                  "quality": {
+                    "enum": [
+                      "OK",
+                      "NG"
+                    ]
+                  }
+                },
+                "required": [
+                  "session_id",
+                  "command_sequence",
+                  "ready",
+                  "arrival",
+                  "position",
+                  "safety_ok",
+                  "result_id",
+                  "quality"
+                ],
+                "additionalProperties": false
+              }
+            ]
+          },
+          "correlation": {
+            "$ref": "#/$defs/correlation"
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "message_type": {
+            "const": "DeviceFinished"
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "payload": {
+            "type": "object",
+            "properties": {
+              "session_id": {
+                "type": "string",
+                "pattern": "^[A-Za-z0-9_.:-]{1,128}$"
+              },
+              "command_sequence": {
+                "type": "string",
+                "pattern": "^[1-9][0-9]{0,19}$",
+                "description": "Canonical decimal uint64. Reader additionally enforces <=18446744073709551615."
+              },
+              "ready": {
+                "type": "boolean"
+              },
+              "arrival_sequence": {
+                "type": "string",
+                "pattern": "^(0|[1-9][0-9]{0,19})$",
+                "description": "Canonical decimal uint64. Reader additionally enforces <=18446744073709551615."
+              },
+              "position": {
+                "type": "boolean"
+              },
+              "safety_ok": {
+                "type": "boolean"
+              },
+              "ack_id": {
+                "oneOf": [
+                  {
+                    "type": "null"
+                  },
+                  {
+                    "type": "string",
+                    "pattern": "^[A-Za-z0-9_.:-]{1,128}$"
+                  }
+                ]
+              }
+            },
+            "required": [
+              "session_id",
+              "command_sequence",
+              "ready",
+              "arrival_sequence",
+              "position",
+              "safety_ok",
+              "ack_id"
+            ],
+            "additionalProperties": false
+          },
+          "correlation": {
+            "$ref": "#/$defs/correlation"
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "message_type": {
+            "const": "TaskAccepted"
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "payload": {
+            "type": "object",
+            "properties": {},
+            "required": [],
+            "additionalProperties": false
+          },
+          "correlation": {
+            "$ref": "#/$defs/correlation"
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "message_type": {
+            "const": "CaptureTask"
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "payload": {
+            "type": "object",
+            "properties": {
+              "slot_count": {
+                "type": "integer",
+                "minimum": 1,
+                "maximum": 4096
+              },
+              "slot_bytes": {
+                "type": "string",
+                "pattern": "^[1-9][0-9]{0,19}$",
+                "description": "Canonical decimal uint64. Reader additionally enforces <=18446744073709551615."
+              },
+              "write_frame": {
+                "type": "object",
+                "properties": {
+                  "schema_version": {
+                    "const": 1
+                  },
+                  "run_id": {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 128,
+                    "pattern": "^[A-Za-z0-9_.:-]+$"
+                  },
+                  "pool_id": {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 128,
+                    "pattern": "^[A-Za-z0-9_.:-]+$"
+                  },
+                  "worker_id": {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 128,
+                    "pattern": "^[A-Za-z0-9_.:-]+$"
+                  },
+                  "worker_epoch": {
+                    "type": "string",
+                    "pattern": "^[1-9][0-9]{0,19}$"
+                  },
+                  "slot_id": {
+                    "type": "string",
+                    "pattern": "^(0|[1-9][0-9]{0,19})$",
+                    "description": "C++ semantic validation additionally checks uint64 maximum."
+                  },
+                  "slot_generation": {
+                    "type": "string",
+                    "pattern": "^[1-9][0-9]{0,19}$"
+                  },
+                  "lease_id": {
+                    "type": "string",
+                    "pattern": "^[1-9][0-9]{0,19}$"
+                  },
+                  "frame_id": {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 128,
+                    "pattern": "^[A-Za-z0-9_.:-]+$"
+                  },
+                  "width": {
+                    "type": "integer",
+                    "minimum": 1,
+                    "maximum": 4294967295
+                  },
+                  "height": {
+                    "type": "integer",
+                    "minimum": 1,
+                    "maximum": 4294967295
+                  },
+                  "stride": {
+                    "type": "string",
+                    "pattern": "^[1-9][0-9]{0,19}$"
+                  },
+                  "offset": {
+                    "type": "string",
+                    "pattern": "^(0|[1-9][0-9]{0,19})$",
+                    "description": "C++ semantic validation additionally checks uint64 maximum."
+                  },
+                  "length": {
+                    "type": "string",
+                    "pattern": "^[1-9][0-9]{0,19}$"
+                  },
+                  "pixel_format": {
+                    "enum": [
+                      "Mono8",
+                      "RGB8",
+                      "BGR8"
+                    ]
+                  }
+                },
+                "required": [
+                  "schema_version",
+                  "run_id",
+                  "pool_id",
+                  "worker_id",
+                  "worker_epoch",
+                  "slot_id",
+                  "slot_generation",
+                  "lease_id",
+                  "frame_id",
+                  "width",
+                  "height",
+                  "stride",
+                  "offset",
+                  "length",
+                  "pixel_format"
+                ],
+                "additionalProperties": false
+              },
+              "budget_ns": {
+                "type": "string",
+                "pattern": "^[1-9][0-9]{0,19}$",
+                "description": "Canonical decimal uint64. Reader additionally enforces <=18446744073709551615."
+              }
+            },
+            "required": [
+              "slot_count",
+              "slot_bytes",
+              "write_frame",
+              "budget_ns"
+            ],
+            "additionalProperties": false
+          },
+          "correlation": {
+            "$ref": "#/$defs/correlation"
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "message_type": {
+            "const": "InspectTask"
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "payload": {
+            "type": "object",
+            "properties": {
+              "slot_count": {
+                "type": "integer",
+                "minimum": 1,
+                "maximum": 4096
+              },
+              "slot_bytes": {
+                "type": "string",
+                "pattern": "^[1-9][0-9]{0,19}$",
+                "description": "Canonical decimal uint64. Reader additionally enforces <=18446744073709551615."
+              },
+              "read_frame": {
+                "type": "object",
+                "properties": {
+                  "schema_version": {
+                    "const": 1
+                  },
+                  "run_id": {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 128,
+                    "pattern": "^[A-Za-z0-9_.:-]+$"
+                  },
+                  "pool_id": {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 128,
+                    "pattern": "^[A-Za-z0-9_.:-]+$"
+                  },
+                  "worker_id": {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 128,
+                    "pattern": "^[A-Za-z0-9_.:-]+$"
+                  },
+                  "worker_epoch": {
+                    "type": "string",
+                    "pattern": "^[1-9][0-9]{0,19}$"
+                  },
+                  "slot_id": {
+                    "type": "string",
+                    "pattern": "^(0|[1-9][0-9]{0,19})$",
+                    "description": "C++ semantic validation additionally checks uint64 maximum."
+                  },
+                  "slot_generation": {
+                    "type": "string",
+                    "pattern": "^[1-9][0-9]{0,19}$"
+                  },
+                  "lease_id": {
+                    "type": "string",
+                    "pattern": "^[1-9][0-9]{0,19}$"
+                  },
+                  "frame_id": {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 128,
+                    "pattern": "^[A-Za-z0-9_.:-]+$"
+                  },
+                  "width": {
+                    "type": "integer",
+                    "minimum": 1,
+                    "maximum": 4294967295
+                  },
+                  "height": {
+                    "type": "integer",
+                    "minimum": 1,
+                    "maximum": 4294967295
+                  },
+                  "stride": {
+                    "type": "string",
+                    "pattern": "^[1-9][0-9]{0,19}$"
+                  },
+                  "offset": {
+                    "type": "string",
+                    "pattern": "^(0|[1-9][0-9]{0,19})$",
+                    "description": "C++ semantic validation additionally checks uint64 maximum."
+                  },
+                  "length": {
+                    "type": "string",
+                    "pattern": "^[1-9][0-9]{0,19}$"
+                  },
+                  "pixel_format": {
+                    "enum": [
+                      "Mono8",
+                      "RGB8",
+                      "BGR8"
+                    ]
+                  }
+                },
+                "required": [
+                  "schema_version",
+                  "run_id",
+                  "pool_id",
+                  "worker_id",
+                  "worker_epoch",
+                  "slot_id",
+                  "slot_generation",
+                  "lease_id",
+                  "frame_id",
+                  "width",
+                  "height",
+                  "stride",
+                  "offset",
+                  "length",
+                  "pixel_format"
+                ],
+                "additionalProperties": false
+              },
+              "budget_ns": {
+                "type": "string",
+                "pattern": "^[1-9][0-9]{0,19}$",
+                "description": "Canonical decimal uint64. Reader additionally enforces <=18446744073709551615."
+              }
+            },
+            "required": [
+              "slot_count",
+              "slot_bytes",
+              "read_frame",
+              "budget_ns"
+            ],
+            "additionalProperties": false
+          },
+          "correlation": {
+            "$ref": "#/$defs/correlation"
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "message_type": {
+            "const": "CaptureFinished"
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "payload": {
+            "oneOf": [
+              {
+                "type": "object",
+                "properties": {
+                  "execution_state": {
+                    "const": "Succeeded"
+                  },
+                  "frame": {
+                    "type": "object",
+                    "properties": {
+                      "schema_version": {
+                        "const": 1
+                      },
+                      "run_id": {
+                        "type": "string",
+                        "minLength": 1,
+                        "maxLength": 128,
+                        "pattern": "^[A-Za-z0-9_.:-]+$"
+                      },
+                      "pool_id": {
+                        "type": "string",
+                        "minLength": 1,
+                        "maxLength": 128,
+                        "pattern": "^[A-Za-z0-9_.:-]+$"
+                      },
+                      "worker_id": {
+                        "type": "string",
+                        "minLength": 1,
+                        "maxLength": 128,
+                        "pattern": "^[A-Za-z0-9_.:-]+$"
+                      },
+                      "worker_epoch": {
+                        "type": "string",
+                        "pattern": "^[1-9][0-9]{0,19}$"
+                      },
+                      "slot_id": {
+                        "type": "string",
+                        "pattern": "^(0|[1-9][0-9]{0,19})$",
+                        "description": "C++ semantic validation additionally checks uint64 maximum."
+                      },
+                      "slot_generation": {
+                        "type": "string",
+                        "pattern": "^[1-9][0-9]{0,19}$"
+                      },
+                      "lease_id": {
+                        "type": "string",
+                        "pattern": "^[1-9][0-9]{0,19}$"
+                      },
+                      "frame_id": {
+                        "type": "string",
+                        "minLength": 1,
+                        "maxLength": 128,
+                        "pattern": "^[A-Za-z0-9_.:-]+$"
+                      },
+                      "width": {
+                        "type": "integer",
+                        "minimum": 1,
+                        "maximum": 4294967295
+                      },
+                      "height": {
+                        "type": "integer",
+                        "minimum": 1,
+                        "maximum": 4294967295
+                      },
+                      "stride": {
+                        "type": "string",
+                        "pattern": "^[1-9][0-9]{0,19}$"
+                      },
+                      "offset": {
+                        "type": "string",
+                        "pattern": "^(0|[1-9][0-9]{0,19})$",
+                        "description": "C++ semantic validation additionally checks uint64 maximum."
+                      },
+                      "length": {
+                        "type": "string",
+                        "pattern": "^[1-9][0-9]{0,19}$"
+                      },
+                      "pixel_format": {
+                        "enum": [
+                          "Mono8",
+                          "RGB8",
+                          "BGR8"
+                        ]
+                      }
+                    },
+                    "required": [
+                      "schema_version",
+                      "run_id",
+                      "pool_id",
+                      "worker_id",
+                      "worker_epoch",
+                      "slot_id",
+                      "slot_generation",
+                      "lease_id",
+                      "frame_id",
+                      "width",
+                      "height",
+                      "stride",
+                      "offset",
+                      "length",
+                      "pixel_format"
+                    ],
+                    "additionalProperties": false
+                  },
+                  "error_code": {
+                    "type": "null"
+                  }
+                },
+                "required": [
+                  "execution_state",
+                  "frame",
+                  "error_code"
+                ],
+                "additionalProperties": false
+              },
+              {
+                "type": "object",
+                "properties": {
+                  "execution_state": {
+                    "enum": [
+                      "Failed",
+                      "Cancelled",
+                      "TimedOut"
+                    ]
+                  },
+                  "frame": {
+                    "type": "null"
+                  },
+                  "error_code": {
+                    "type": "string",
+                    "pattern": "^[A-Za-z0-9_.:-]{1,128}$"
+                  }
+                },
+                "required": [
+                  "execution_state",
+                  "frame",
+                  "error_code"
+                ],
+                "additionalProperties": false
+              }
+            ]
+          },
+          "correlation": {
+            "$ref": "#/$defs/correlation"
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "message_type": {
+            "const": "TaskProgress"
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "payload": {
+            "type": "object",
+            "properties": {
+              "progress_sequence": {
+                "type": "string",
+                "pattern": "^[1-9][0-9]{0,19}$",
+                "description": "Canonical decimal uint64. Reader additionally enforces <=18446744073709551615."
+              }
+            },
+            "required": [
+              "progress_sequence"
+            ],
+            "additionalProperties": false
+          },
+          "correlation": {
+            "$ref": "#/$defs/correlation"
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "message_type": {
+            "const": "TaskFinished"
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "payload": {
+            "oneOf": [
+              {
+                "type": "object",
+                "properties": {
+                  "execution_state": {
+                    "const": "Succeeded"
+                  },
+                  "quality": {
+                    "enum": [
+                      "OK",
+                      "NG"
+                    ]
+                  },
+                  "result_ref": {
+                    "type": "string",
+                    "pattern": "^[A-Za-z0-9_.:-]{1,128}$"
+                  },
+                  "error_code": {
+                    "type": "null"
+                  }
+                },
+                "required": [
+                  "execution_state",
+                  "quality",
+                  "result_ref",
+                  "error_code"
+                ],
+                "additionalProperties": false
+              },
+              {
+                "type": "object",
+                "properties": {
+                  "execution_state": {
+                    "enum": [
+                      "Failed",
+                      "Cancelled",
+                      "TimedOut"
+                    ]
+                  },
+                  "quality": {
+                    "const": "Unknown"
+                  },
+                  "result_ref": {
+                    "type": "null"
+                  },
+                  "error_code": {
+                    "type": "string",
+                    "pattern": "^[A-Za-z0-9_.:-]{1,128}$"
+                  }
+                },
+                "required": [
+                  "execution_state",
+                  "quality",
+                  "result_ref",
+                  "error_code"
+                ],
+                "additionalProperties": false
+              }
+            ]
+          },
+          "correlation": {
+            "$ref": "#/$defs/correlation"
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "message_type": {
+            "const": "Cancel"
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "payload": {
+            "type": "object",
+            "properties": {
+              "reason": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 256,
+                "pattern": "^[^\\u0000]+$"
+              }
+            },
+            "required": [
+              "reason"
+            ],
+            "additionalProperties": false
+          },
+          "correlation": {
+            "$ref": "#/$defs/correlation"
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "message_type": {
+            "const": "Heartbeat"
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "payload": {
+            "type": "object",
+            "properties": {
+              "progress_sequence": {
+                "type": "string",
+                "pattern": "^(0|[1-9][0-9]{0,19})$",
+                "description": "Canonical decimal uint64. Reader additionally enforces <=18446744073709551615."
+              }
+            },
+            "required": [
+              "progress_sequence"
+            ],
+            "additionalProperties": false
+          },
+          "correlation": {
+            "type": "null"
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "message_type": {
+            "const": "Fault"
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "payload": {
+            "type": "object",
+            "properties": {
+              "code": {
+                "type": "string",
+                "pattern": "^[A-Za-z0-9_.:-]{1,128}$"
+              },
+              "category": {
+                "enum": [
+                  "Configuration",
+                  "Protocol",
+                  "Device",
+                  "Execution",
+                  "Resource",
+                  "Persistence",
+                  "Delivery",
+                  "Internal"
+                ]
+              },
+              "message": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 2048,
+                "pattern": "^[^\\u0000]+$"
+              },
+              "retryability": {
+                "enum": [
+                  "Never",
+                  "AfterRecovery",
+                  "Safe"
+                ]
+              }
+            },
+            "required": [
+              "code",
+              "category",
+              "message",
+              "retryability"
+            ],
+            "additionalProperties": false
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "message_type": {
+            "const": "Drain"
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "payload": {
+            "type": "object",
+            "properties": {
+              "budget_ns": {
+                "type": "string",
+                "pattern": "^[1-9][0-9]{0,19}$",
+                "description": "Canonical decimal uint64. Reader additionally enforces <=18446744073709551615."
+              }
+            },
+            "required": [
+              "budget_ns"
+            ],
+            "additionalProperties": false
+          },
+          "correlation": {
+            "type": "null"
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "message_type": {
+            "const": "Stop"
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "payload": {
+            "type": "object",
+            "properties": {
+              "reason": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 256,
+                "pattern": "^[^\\u0000]+$"
+              }
+            },
+            "required": [
+              "reason"
+            ],
+            "additionalProperties": false
+          },
+          "correlation": {
+            "type": "null"
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "message_type": {
+            "const": "LeaseRelease"
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "payload": {
+            "type": "object",
+            "properties": {
+              "pool_id": {
+                "type": "string",
+                "pattern": "^[A-Za-z0-9_.:-]{1,128}$"
+              },
+              "lease_id": {
+                "type": "string",
+                "pattern": "^[A-Za-z0-9_.:-]{1,128}$"
+              },
+              "slot_id": {
+                "type": "string",
+                "pattern": "^(0|[1-9][0-9]{0,19})$",
+                "description": "Canonical decimal uint64. Reader additionally enforces <=18446744073709551615."
+              },
+              "slot_generation": {
+                "type": "string",
+                "pattern": "^[1-9][0-9]{0,19}$",
+                "description": "Canonical decimal uint64. Reader additionally enforces <=18446744073709551615."
+              }
+            },
+            "required": [
+              "pool_id",
+              "lease_id",
+              "slot_id",
+              "slot_generation"
+            ],
+            "additionalProperties": false
+          },
+          "correlation": {
+            "type": "null"
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "message_type": {
+            "const": "ResultEvent"
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "payload": {
+            "type": "object",
+            "properties": {
+              "event": {
+                "$ref": "#/$defs/event"
+              }
+            },
+            "required": [
+              "event"
+            ],
+            "additionalProperties": false
+          },
+          "correlation": {
+            "type": "null"
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "message_type": {
+            "const": "DeliveryReport"
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "payload": {
+            "oneOf": [
+              {
+                "type": "object",
+                "properties": {
+                  "event_id": {
+                    "type": "string",
+                    "pattern": "^[A-Za-z0-9_.:-]{1,128}$"
+                  },
+                  "output_instance_id": {
+                    "type": "string",
+                    "pattern": "^[A-Za-z0-9_.:-]{1,128}$"
+                  },
+                  "state": {
+                    "enum": [
+                      "Pending",
+                      "Accepted",
+                      "DurablyQueued",
+                      "TransportConfirmed",
+                      "BusinessAcked"
+                    ]
+                  },
+                  "attempt": {
+                    "type": "string",
+                    "pattern": "^[1-9][0-9]{0,19}$",
+                    "description": "Canonical decimal uint64. Reader additionally enforces <=18446744073709551615."
+                  },
+                  "error_code": {
+                    "type": "null"
+                  }
+                },
+                "required": [
+                  "event_id",
+                  "output_instance_id",
+                  "state",
+                  "attempt",
+                  "error_code"
+                ],
+                "additionalProperties": false
+              },
+              {
+                "type": "object",
+                "properties": {
+                  "event_id": {
+                    "type": "string",
+                    "pattern": "^[A-Za-z0-9_.:-]{1,128}$"
+                  },
+                  "output_instance_id": {
+                    "type": "string",
+                    "pattern": "^[A-Za-z0-9_.:-]{1,128}$"
+                  },
+                  "state": {
+                    "enum": [
+                      "Failed",
+                      "Expired",
+                      "Unknown"
+                    ]
+                  },
+                  "attempt": {
+                    "type": "string",
+                    "pattern": "^[1-9][0-9]{0,19}$",
+                    "description": "Canonical decimal uint64. Reader additionally enforces <=18446744073709551615."
+                  },
+                  "error_code": {
+                    "type": "string",
+                    "pattern": "^[A-Za-z0-9_.:-]{1,128}$"
+                  }
+                },
+                "required": [
+                  "event_id",
+                  "output_instance_id",
+                  "state",
+                  "attempt",
+                  "error_code"
+                ],
+                "additionalProperties": false
+              }
+            ]
+          },
+          "correlation": {
+            "type": "null"
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "message_type": {
+            "const": "DeliveryTask"
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "payload": {
+            "type": "object",
+            "properties": {
+              "event": {
+                "$ref": "#/$defs/event"
+              },
+              "output_instance_id": {
+                "type": "string",
+                "pattern": "^[A-Za-z0-9_.:-]{1,128}$"
+              },
+              "attempt": {
+                "type": "string",
+                "pattern": "^[1-9][0-9]{0,19}$",
+                "description": "Canonical decimal uint64. Reader additionally enforces <=18446744073709551615."
+              },
+              "budget_ns": {
+                "type": "string",
+                "pattern": "^[1-9][0-9]{0,19}$",
+                "description": "Canonical decimal uint64. Reader additionally enforces <=18446744073709551615."
+              }
+            },
+            "required": [
+              "event",
+              "output_instance_id",
+              "attempt",
+              "budget_ns"
+            ],
+            "additionalProperties": false
+          },
+          "correlation": {
+            "$ref": "#/$defs/correlation"
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "message_type": {
+            "const": "DeliveryFinished"
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "payload": {
+            "oneOf": [
+              {
+                "type": "object",
+                "properties": {
+                  "event_id": {
+                    "type": "string",
+                    "pattern": "^[A-Za-z0-9_.:-]{1,128}$"
+                  },
+                  "output_instance_id": {
+                    "type": "string",
+                    "pattern": "^[A-Za-z0-9_.:-]{1,128}$"
+                  },
+                  "state": {
+                    "enum": [
+                      "Pending",
+                      "Accepted",
+                      "DurablyQueued",
+                      "TransportConfirmed",
+                      "BusinessAcked"
+                    ]
+                  },
+                  "attempt": {
+                    "type": "string",
+                    "pattern": "^[1-9][0-9]{0,19}$",
+                    "description": "Canonical decimal uint64. Reader additionally enforces <=18446744073709551615."
+                  },
+                  "error_code": {
+                    "type": "null"
+                  }
+                },
+                "required": [
+                  "event_id",
+                  "output_instance_id",
+                  "state",
+                  "attempt",
+                  "error_code"
+                ],
+                "additionalProperties": false
+              },
+              {
+                "type": "object",
+                "properties": {
+                  "event_id": {
+                    "type": "string",
+                    "pattern": "^[A-Za-z0-9_.:-]{1,128}$"
+                  },
+                  "output_instance_id": {
+                    "type": "string",
+                    "pattern": "^[A-Za-z0-9_.:-]{1,128}$"
+                  },
+                  "state": {
+                    "enum": [
+                      "Failed",
+                      "Expired",
+                      "Unknown"
+                    ]
+                  },
+                  "attempt": {
+                    "type": "string",
+                    "pattern": "^[1-9][0-9]{0,19}$",
+                    "description": "Canonical decimal uint64. Reader additionally enforces <=18446744073709551615."
+                  },
+                  "error_code": {
+                    "type": "string",
+                    "pattern": "^[A-Za-z0-9_.:-]{1,128}$"
+                  }
+                },
+                "required": [
+                  "event_id",
+                  "output_instance_id",
+                  "state",
+                  "attempt",
+                  "error_code"
+                ],
+                "additionalProperties": false
+              }
+            ]
+          },
+          "correlation": {
+            "$ref": "#/$defs/correlation"
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "message_type": {
+            "const": "CheckFinished"
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "payload": {
+            "type": "object",
+            "properties": {
+              "check": {
+                "$ref": "#/$defs/check"
+              }
+            },
+            "required": [
+              "check"
+            ],
+            "additionalProperties": false
+          },
+          "correlation": {
+            "$ref": "#/$defs/correlation"
+          }
+        }
+      }
+    }
+  ]
+}
