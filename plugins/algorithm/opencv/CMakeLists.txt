@@ -1,0 +1,38 @@
+option(VISION_BUILD_OPENCV "Build the optional OpenCV algorithm plugin" OFF)
+if(NOT VISION_BUILD_OPENCV)
+    return()
+endif()
+find_package(OpenCV 4 REQUIRED COMPONENTS core imgproc imgcodecs)
+set_property(GLOBAL PROPERTY VISION_OPENCV_LIBRARIES "${OpenCV_LIBS}")
+foreach(library IN LISTS OpenCV_LIBS)
+    if(TARGET ${library})
+        set_property(TARGET ${library} PROPERTY IMPORTED_GLOBAL TRUE)
+    endif()
+endforeach()
+add_library(vision_opencv_backend STATIC engine.cpp)
+target_include_directories(vision_opencv_backend PUBLIC "${CMAKE_CURRENT_SOURCE_DIR}" PRIVATE ${OpenCV_INCLUDE_DIRS})
+target_link_libraries(vision_opencv_backend PUBLIC vision_contracts vision_json PRIVATE ${OpenCV_LIBS})
+vision_configure_target(vision_opencv_backend)
+add_library(vision-opencv-algorithm SHARED algorithm.cpp)
+target_link_libraries(vision-opencv-algorithm PRIVATE vision_opencv_backend vision_plugin_sdk vision_frame_transport vision_serialization)
+vision_configure_target(vision-opencv-algorithm)
+function(vision_deploy_opencv target)
+    get_property(opencv_libraries GLOBAL PROPERTY VISION_OPENCV_LIBRARIES)
+    # Imported OpenCV targets carry the actual configuration-specific DLL path.
+    foreach(library IN LISTS opencv_libraries)
+        if(TARGET ${library})
+            get_target_property(kind ${library} TYPE)
+            if(kind STREQUAL "SHARED_LIBRARY")
+                add_custom_command(TARGET ${target} POST_BUILD
+                    COMMAND "${CMAKE_COMMAND}" -E copy_if_different "$<TARGET_FILE:${library}>" "$<TARGET_FILE_DIR:${target}>")
+            endif()
+        endif()
+    endforeach()
+endfunction()
+vision_deploy_opencv(vision-opencv-algorithm)
+add_custom_command(TARGET vision-opencv-algorithm POST_BUILD
+    COMMAND "${CMAKE_COMMAND}" -E copy_if_different "${CMAKE_CURRENT_SOURCE_DIR}/manifest.json" "$<TARGET_FILE_DIR:vision-opencv-algorithm>/opencv-algorithm.json"
+    COMMAND "${CMAKE_COMMAND}" -E copy_if_different "${PROJECT_SOURCE_DIR}/plugins/sim-camera/LICENSE.txt" "$<TARGET_FILE_DIR:vision-opencv-algorithm>/LICENSE.txt")
+add_custom_command(TARGET vision-opencv-algorithm POST_BUILD
+    COMMAND "${CMAKE_COMMAND}" -E copy_directory "${CMAKE_CURRENT_SOURCE_DIR}/notices"
+    "$<TARGET_FILE_DIR:vision-opencv-algorithm>/opencv-notices")

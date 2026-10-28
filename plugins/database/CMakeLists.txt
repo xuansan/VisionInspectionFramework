@@ -1,0 +1,42 @@
+option(VISION_BUILD_MYSQL_OUTPUT "Build optional native MySQL result output" OFF)
+option(VISION_BUILD_POSTGRESQL_OUTPUT "Build optional native PostgreSQL result output" OFF)
+set(VISION_MARIADB_ROOT "${PROJECT_SOURCE_DIR}/开发环境/SDK/mariadb" CACHE PATH "MariaDB Connector/C 3.4.5 SDK")
+set(VISION_LIBPQ_ROOT "${PROJECT_SOURCE_DIR}/开发环境/SDK/PostgreSQL/pgsql" CACHE PATH "PostgreSQL 17.4 SDK")
+set(VISION_DATABASE_OPENSSL_ROOT "${VISION_LIBPQ_ROOT}" CACHE PATH "OpenSSL runtime used by database clients")
+function(vision_database_plugin name client)
+    add_library(vision-${name}-output SHARED output.cpp)
+    target_compile_definitions(vision-${name}-output PRIVATE NOMINMAX WIN32_LEAN_AND_MEAN)
+    target_link_libraries(vision-${name}-output PRIVATE vision_plugin_sdk vision_serialization vision_json vision_storage vision_inference ${client} ws2_32)
+    vision_configure_target(vision-${name}-output)
+    add_custom_command(TARGET vision-${name}-output POST_BUILD
+        COMMAND ${CMAKE_COMMAND} -E copy_if_different "${CMAKE_CURRENT_SOURCE_DIR}/manifest.json" "$<TARGET_FILE_DIR:vision-${name}-output>/${name}-output.json"
+        COMMAND ${CMAKE_COMMAND} -E copy_if_different "${PROJECT_SOURCE_DIR}/plugins/sim-camera/LICENSE.txt" "$<TARGET_FILE_DIR:vision-${name}-output>/LICENSE.txt"
+        COMMAND ${CMAKE_COMMAND} -E copy_directory "${PROJECT_SOURCE_DIR}/dependencies/licenses/${name}" "$<TARGET_FILE_DIR:vision-${name}-output>/${name}-notices"
+        COMMAND ${CMAKE_COMMAND} -E copy_directory "${CMAKE_CURRENT_SOURCE_DIR}/migrations" "$<TARGET_FILE_DIR:vision-${name}-output>/migrations")
+endfunction()
+function(vision_deploy_database target)
+    if(VISION_BUILD_MYSQL_OUTPUT OR VISION_BUILD_POSTGRESQL_OUTPUT)
+        foreach(file IN ITEMS libssl-3-x64.dll libcrypto-3-x64.dll)
+            if(NOT EXISTS "${VISION_DATABASE_OPENSSL_ROOT}/bin/${file}")
+                message(FATAL_ERROR "Database OpenSSL runtime missing: ${file}")
+            endif()
+            add_custom_command(TARGET ${target} POST_BUILD COMMAND ${CMAKE_COMMAND} -E copy_if_different
+                "${VISION_DATABASE_OPENSSL_ROOT}/bin/${file}" "$<TARGET_FILE_DIR:${target}>/${file}")
+        endforeach()
+    endif()
+    if(VISION_BUILD_MYSQL_OUTPUT)
+        add_custom_command(TARGET ${target} POST_BUILD COMMAND ${CMAKE_COMMAND} -E copy_if_different
+            "${VISION_MARIADB_ROOT}/lib/libmariadb.dll" "$<TARGET_FILE_DIR:${target}>/libmariadb.dll")
+    endif()
+    if(VISION_BUILD_POSTGRESQL_OUTPUT)
+        foreach(file IN ITEMS libpq.dll libintl-9.dll libiconv-2.dll libwinpthread-1.dll)
+            if(NOT EXISTS "${VISION_LIBPQ_ROOT}/bin/${file}")
+                message(FATAL_ERROR "PostgreSQL runtime missing: ${file}")
+            endif()
+            add_custom_command(TARGET ${target} POST_BUILD COMMAND ${CMAKE_COMMAND} -E copy_if_different
+                "${VISION_LIBPQ_ROOT}/bin/${file}" "$<TARGET_FILE_DIR:${target}>/${file}")
+        endforeach()
+    endif()
+endfunction()
+add_subdirectory(mysql-output)
+add_subdirectory(postgresql-output)

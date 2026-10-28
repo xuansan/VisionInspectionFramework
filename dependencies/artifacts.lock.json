@@ -4,12 +4,25 @@
   "purpose": "Version and artifact provenance baseline; not a universal installer or release SBOM",
   "artifacts": [
     {
+      "name": "paho-mqtt-c",
+      "version": "1.3.15",
+      "url": "https://github.com/eclipse-paho/paho.mqtt.c",
+      "commit": "62782406bcf511ee8e22bc34e826f8c6b8254c7c",
+      "verification": "Local upstream checkout HEAD verified; not a publisher-attested archive hash",
+      "license_option": "EDL-1.0",
+      "notices": "dependencies/licenses/paho",
+      "scope": "optional-mqtt-output-static-async-client"
+    },
+    {
       "name": "opencv",
       "version": "4.12.0",
       "url": "https://github.com/opencv/opencv/releases/download/4.12.0/opencv-4.12.0-windows.exe",
       "sha256": "b753b14d880b9bc8d89d6acd3b665c040baec0211078435432fcae117db707af",
       "verification": "GitHub release API SHA256 matched",
-      "scope": "selected-future-worker-or-dev-tool"
+      "scope": "optional-opencv-algorithm-worker-and-tests",
+      "runtime_dll_sha256": "0455560c75bc456b5f758c94af653b6f0397ed8a28b9605cf52c62e7c8f18781",
+      "notices": "plugins/algorithm/opencv/notices",
+      "redistribution_review": "Prebuilt world includes additional modules; release SBOM and IPP/other bundled notices remain a packaging gate"
     },
     {
       "name": "onnxruntime",
@@ -130,6 +143,87 @@
       "sha256": "aaf127c04cb31c406e5b04a63f1ae89369fccde6d8fa7cdda1ed4f32dfc5de63",
       "verification": "Matches locally verified installed header; enforced by cmake/Json.cmake",
       "scope": "active-serialization"
+    },
+    {
+      "name": "librdkafka-source",
+      "version": "2.8.0",
+      "url": "https://codeload.github.com/confluentinc/librdkafka/tar.gz/refs/tags/v2.8.0",
+      "sha256": "5bd1c46f63265f31c6bfcedcde78703f77d28238eadf23821c2b43fc30be3e25",
+      "verification": "Local archive hash, not upstream signature verification",
+      "scope": "optional-kafka-output"
+    },
+    {
+      "name": "rabbitmq-c-source",
+      "version": "0.15.0",
+      "url": "https://github.com/alanxz/rabbitmq-c",
+      "commit": "84b81cd97a1b5515d3d4b304796680da24c666d8",
+      "verification": "Fixed upstream Git checkout",
+      "scope": "optional-rabbitmq-output"
+    },
+    {
+      "name": "nats-c-source",
+      "version": "3.9.1",
+      "url": "https://codeload.github.com/nats-io/nats.c/tar.gz/refs/tags/v3.9.1",
+      "sha256": "56836bb30a2da93eaa6df0dfa27e796e6be0933b5b3d4d83b5c76d3b80304290",
+      "verification": "Local archive hash, not upstream signature verification",
+      "scope": "optional-nats-output"
+    },
+    {
+      "name": "kafka-native-test-server",
+      "version": "3.9.1",
+      "url": "https://archive.apache.org/dist/kafka/3.9.1/kafka_2.13-3.9.1.tgz",
+      "sha256": "dd4399816e678946cab76e3bd1686103555e69bc8f2ab8686cda71aa15bc31a3",
+      "verification": "Local official archive hash, not upstream signature verification",
+      "scope": "development-native-broker-test-only"
+    },
+    {
+      "name": "rabbitmq-native-test-server",
+      "version": "3.13.7",
+      "url": "https://github.com/rabbitmq/rabbitmq-server/releases/download/v3.13.7/rabbitmq-server-windows-3.13.7.zip",
+      "sha256": "eb1967ad89834e8de50e36d48a88b2ab46fdc4a6062db36b0682e3259084a102",
+      "verification": "Local official asset hash, not upstream signature verification",
+      "scope": "development-native-broker-test-only"
+    },
+    {
+      "name": "erlang-native-test-runtime",
+      "version": "26.2.5.15",
+      "url": "https://github.com/erlang/otp/releases/download/OTP-26.2.5.15/otp_win64_26.2.5.15.zip",
+      "sha256": "0b3193403ec02758f0ba0309a68cf853dc02a3d0887ae9c6b731efbc80f79e04",
+      "verification": "Matches official GitHub release asset digest",
+      "scope": "development-native-broker-test-only"
+    },
+    {
+      "name": "mariadb-connector-c-source",
+      "version": "3.4.5",
+      "url": "https://github.com/mariadb-corporation/mariadb-connector-c",
+      "commit": "c61bdb5ac1cd1b41210dd57bb14fa377e555ce0c",
+      "patch": "dependencies/patches/mariadb-3.4.5-windows-openssl.patch",
+      "verification": "Fixed upstream checkout plus tracked Windows OpenSSL and strict hostname patch",
+      "scope": "optional-mysql-output"
+    },
+    {
+      "name": "mysql-native-test-server",
+      "version": "8.4.4",
+      "url": "https://cdn.mysql.com/archives/mysql-8.4/mysql-8.4.4-winx64.zip",
+      "sha256": "dd7e8646cee0e98a04a7bb3fc44a68632ed56ba4ac55d7693bcdfe09544af930",
+      "verification": "Local archive hash, not upstream signature verification",
+      "scope": "development-database-test-only"
+    },
+    {
+      "name": "postgresql-windows-sdk",
+      "version": "17.4-1",
+      "url": "https://get.enterprisedb.com/postgresql/postgresql-17.4-1-windows-x64-binaries.zip",
+      "sha256": "80bb49e80df0100dd52e7b3c647896f8d8cfde760b6473e5180819c8df4b23c4",
+      "verification": "Local archive hash, not upstream signature verification; bundled OpenSSL 3.0.16",
+      "scope": "optional-postgresql-output-and-development-database-test"
+    },
+    {
+      "name": "nats-native-test-server",
+      "version": "2.10.24",
+      "url": "https://github.com/nats-io/nats-server/releases/download/v2.10.24/nats-server-v2.10.24-windows-amd64.zip",
+      "sha256": "bf94c9a9f1685147fd95f6c62f26d16fb72dc8c8c592e2d8c9115e2491c508c3",
+      "verification": "Local official asset hash, not upstream signature verification",
+      "scope": "development-native-broker-test-only"
     }
   ]
 }

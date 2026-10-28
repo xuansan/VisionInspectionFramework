@@ -1,0 +1,15 @@
+{
+  "mode": "measure",
+  "threshold": 128,
+  "invert": false,
+  "morphology": "open",
+  "kernel": 3,
+  "min_area": 20,
+  "max_area": 100000,
+  "min_count": 1,
+  "max_count": 1,
+  "min_width": 10,
+  "max_width": 100,
+  "min_height": 10,
+  "max_height": 100
+}

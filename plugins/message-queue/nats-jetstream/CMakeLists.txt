@@ -1,0 +1,6 @@
+option(VISION_BUILD_NATS_OUTPUT "Build local NATS JetStream output with business receipts" OFF)
+set(VISION_NATS_ROOT "${PROJECT_SOURCE_DIR}/开发环境/SDK/nats-c" CACHE PATH "nats.c 3.9.1 static SDK")
+if(VISION_BUILD_NATS_OUTPUT)
+    vision_mq_plugin(nats "${VISION_NATS_ROOT}" "${VISION_NATS_ROOT}/lib/nats_static.lib")
+    target_compile_definitions(vision-nats-output PRIVATE NATS_STATIC)
+endif()

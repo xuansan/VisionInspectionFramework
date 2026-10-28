@@ -57,7 +57,7 @@ public:
             try {
                 auto shared=std::shared_ptr<plugin_runtime::Library>(plugin_runtime::Library::load(manifest_,params_));
                 {std::lock_guard guard(library_mutex_);library_=shared;}
-                ok=(shared->manifest().kind=="Algorithm"||shared->manifest().kind=="Camera"||shared->manifest().kind=="Communication"||shared->manifest().kind=="ResultOutput")&&shared->initialize()==plugin_sdk::Status::Ok;
+                ok=(shared->manifest().kind=="Algorithm"||shared->manifest().kind=="Camera"||shared->manifest().kind=="Communication"||shared->manifest().kind=="ResultOutput"||shared->manifest().kind=="ObjectStorage")&&shared->initialize()==plugin_sdk::Status::Ok;
             } catch(...) {}
             QMetaObject::invokeMethod(&target_,[done,ok]{done(ok);},Qt::QueuedConnection);
         });
@@ -83,10 +83,11 @@ public:
                 const auto p=QJsonDocument::fromJson(QByteArray::fromStdString(request)).object();
                 const auto budget=contracts::parse_u64(p["budget_ns"].toString().toStdString());
                 const auto started=std::chrono::steady_clock::now();
-                if(lib&&lib->output_submit(request)==plugin_sdk::Status::Ok)for(;;) {
+                const bool storage=lib&&lib->manifest().kind=="ObjectStorage";
+                if(lib&&(storage?lib->storage_submit(request):lib->output_submit(request))==plugin_sdk::Status::Ok)for(;;) {
                     if(cancelled_||static_cast<std::uint64_t>(std::chrono::duration_cast<std::chrono::nanoseconds>(
                         std::chrono::steady_clock::now()-started).count())>=budget)break;
-                    const auto status=lib->output_poll(response);
+                    const auto status=storage?lib->storage_poll(response):lib->output_poll(response);
                     if(status==plugin_sdk::Status::Busy) {std::this_thread::sleep_for(std::chrono::milliseconds(2));continue;}
                     ok=status==plugin_sdk::Status::Ok;break;
                 }

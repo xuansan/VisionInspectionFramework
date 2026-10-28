@@ -6,7 +6,10 @@ template<std::size_t N>void describe_copy(char(&out)[N],const char* text){const 
 VISION_PLUGIN_EXPORT vision::plugin_sdk::Status VISION_PLUGIN_CALL vision_plugin_describe(vision::plugin_sdk::Descriptor* out,std::uint32_t size) noexcept {
     using namespace vision::plugin_sdk;
     if(!out||size!=sizeof(Descriptor))return Status::Invalid;*out={};out->struct_size=size;out->version=api_version;
-    out->kind=Kind::ResultOutput;out->threading=Threading::Serialized;out->max_instances=1;
+#ifndef VISION_PLUGIN_KIND
+#define VISION_PLUGIN_KIND ResultOutput
+#endif
+    out->kind=Kind::VISION_PLUGIN_KIND;out->threading=Threading::Serialized;out->max_instances=1;
     describe_copy(out->plugin_id,VISION_OUTPUT_ID);describe_copy(out->plugin_version,"0.1.0");describe_copy(out->build_id,VISION_OUTPUT_BUILD);
     describe_copy(out->platform,"windows");describe_copy(out->architecture,"x64");describe_copy(out->compiler_abi,"msvc-v143-md");
 #ifdef _DEBUG

@@ -12,6 +12,7 @@
 | 共享图像映射 | src/frame_transport/ |
 | 相机采集通用流程 | src/capture/及src/capture/qt/ |
 | 算法调用、ONNX推理 | src/algorithm/、src/inference/ |
+| 可选 OpenCV 传统算法 | plugins/algorithm/opencv/；依赖限定在插件私有后端及测试 |
 | 插件接口和加载约束 | src/plugin_sdk/include/vision/plugin_sdk/api.hpp、src/plugin_runtime/ |
 | 持久结果、图像和S3 | src/storage/、docs/protocols/持久存储与输出-v1.md |
 | 现有程序 | apps/workstation、worker-host、frame-archive、storage-tool |

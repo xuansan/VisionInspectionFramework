@@ -40,6 +40,7 @@ public:
 protected:
     virtual void configure(const nlohmann::json&)=0;
     virtual void write(const nlohmann::json&)=0;
+    virtual std::string write_error(const std::exception&) const {return "OUTPUT.WRITE_FAILED";}
     virtual void io_stopped() noexcept {}
     void finish(){request_stop();if(thread_.joinable())thread_.join();}
     std::atomic<bool> stopped_{};
@@ -49,10 +50,11 @@ private:
         for(;;) {
             nlohmann::json request;
             {std::unique_lock lock(mutex_);cv_.wait(lock,[&]{return stopped_||!pending_.is_null();});if(stopped_)return;request=std::move(pending_);pending_=nullptr;}
-            bool success=true;try{write(request);}catch(...){success=false;}
+            bool success=true;std::string error="OUTPUT.WRITE_FAILED";
+            try{write(request);}catch(const std::exception& e){success=false;error=write_error(e);}catch(...){success=false;}
             const auto report=nlohmann::json{{"event_id",request["event"]["event_id"]},{"output_instance_id",request["output_instance_id"]},
                 {"attempt",request["attempt"]},{"state",success?"BusinessAcked":"Failed"},
-                {"error_code",success?nlohmann::json(nullptr):nlohmann::json("OUTPUT.WRITE_FAILED")}}.dump();
+                {"error_code",success?nlohmann::json(nullptr):nlohmann::json(error)}}.dump();
             {std::lock_guard lock(mutex_);report_=report;busy_=false;}
         }
     }

@@ -208,7 +208,7 @@ int pipeline_window(QApplication& app,const QString& smoke_scenario) {
                 }
             }
             if(!smoke_scenario.isEmpty()&&time.elapsed()>15000)throw std::runtime_error("UI deadline");
-        }catch(const std::exception& e) {summary->setText(QString::fromUtf8(e.what()));runner->stop();if(!smoke_scenario.isEmpty())app.exit(1);}
+        }catch(const std::exception& e) {summary->setText(QString::fromUtf8(e.what()));runner->stop();if(!smoke_scenario.isEmpty()){std::cerr<<e.what()<<'\n';app.exit(1);}}
     });
     loop.start();window.show();
     if(!smoke_scenario.isEmpty()) {

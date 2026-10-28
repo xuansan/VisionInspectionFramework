@@ -1,0 +1,6 @@
+option(VISION_BUILD_RABBITMQ_OUTPUT "Build local RabbitMQ output with business receipts" OFF)
+set(VISION_RABBITMQ_ROOT "${PROJECT_SOURCE_DIR}/开发环境/SDK/rabbitmq-c" CACHE PATH "rabbitmq-c 0.15.0 static SDK")
+if(VISION_BUILD_RABBITMQ_OUTPUT)
+    vision_mq_plugin(rabbitmq "${VISION_RABBITMQ_ROOT}" "${VISION_RABBITMQ_ROOT}/lib/librabbitmq.4.lib")
+    target_compile_definitions(vision-rabbitmq-output PRIVATE AMQP_STATIC)
+endif()

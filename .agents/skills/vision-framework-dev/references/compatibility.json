@@ -1,9 +1,9 @@
 {
   "skill_version": "0.1.0",
-  "framework_version": "0.2.0",
+  "framework_version": "0.3.0",
   "validated_platform": "Windows x64 / MSVC v143 dynamic CRT / Release / Qt 6.8.3",
   "interface_sha256": {
-    "CMakeLists.txt": "a07de927ffa38612d24c03d0cee00fb97bf5f56ef1bf57c0d17528346dc9dd70",
+    "CMakeLists.txt": "a0d512876c9a018b8caab2126b3127f66844cdae10d63ab0295a51c41f98c9d3",
     "cmake/Extensions.cmake": "3337ec80ba6d7e60b163f76a01869560c5f94500d8993ab228c122021831ea1c",
     "cmake/Demo.cmake": "aa3d3e1e785b08f67f3697cfafb31f459e9969288eb653c3a7995675efc1551c",
     "src/plugin_sdk/include/vision/plugin_sdk/api.hpp": "eafc15330cb70b3808a54e1de28db136cdacbb260b5660586ddb9a0979d50719",

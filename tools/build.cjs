@@ -47,7 +47,7 @@ const logs = path.join(root, 'out', 'validation', new Date().toISOString().repla
 fs.mkdirSync(logs, { recursive: true });
 function run(exe, args, name) {
   const result = spawnSync(exe, args, {
-    cwd: root, env, encoding: 'utf8', windowsHide: true, timeout: 180000,
+    cwd: root, env, encoding: 'utf8', windowsHide: true, timeout: name === 'test' ? 600000 : 180000,
     maxBuffer: 8 * 1024 * 1024
   });
   const output = (result.stdout || '') + (result.stderr || '');

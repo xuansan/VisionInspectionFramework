@@ -17,6 +17,8 @@ public:
     plugin_sdk::Status device_exchange(std::string_view request,std::string& response);
     plugin_sdk::Status output_submit(std::string_view request);
     plugin_sdk::Status output_poll(std::string& response);
+    plugin_sdk::Status storage_submit(std::string_view request);
+    plugin_sdk::Status storage_poll(std::string& response);
     plugin_sdk::Status camera_enumerate(std::string& devices);
     plugin_sdk::Status camera_open(std::string_view settings);
     plugin_sdk::Status camera_trigger(std::string_view permit);

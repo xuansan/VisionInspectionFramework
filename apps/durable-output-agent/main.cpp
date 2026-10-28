@@ -43,13 +43,22 @@ int main(int argc,char** argv) {
         std::vector<Lane> lanes;std::set<std::string> ids;
         std::uint64_t sequence=0;
         for(const auto& output:config["outputs"]){
-            if(output.size()!=3)throw std::invalid_argument("Output configuration");
+            if(!output.is_object()||(output.size()!=3&&output.size()!=4)||
+                !output.contains("id")||!output.contains("manifest")||!output.contains("parameters")||
+                (output.contains("replay_policy")&&output.at("replay_policy")!="NonPhysicalIdempotent"))
+                throw std::invalid_argument("Output configuration");
             Lane lane;lane.id=output.at("id");(void)contracts::OutputId(lane.id);
             if(lane.id.size()>100||!ids.insert(lane.id).second)throw std::invalid_argument("Output identity");
             const auto manifest=QString::fromStdString(output.at("manifest").get<std::string>());
             const auto metadata=read(manifest);const auto plugin=metadata.at("plugin_id").get<std::string>();
             // Replay allow-list is deliberately limited to audited nonphysical sinks.
-            if(metadata.at("kind")!="ResultOutput"||(plugin!="vision.file-output"&&plugin!="vision.http-output"))
+            const bool local=(metadata.at("kind")=="ResultOutput"&&(plugin=="vision.file-output"||plugin=="vision.http-output"))||
+                (metadata.at("kind")=="ObjectStorage"&&plugin=="vision.s3-storage");
+            const bool remote=metadata.at("kind")=="ResultOutput"&&(plugin=="vision.webhook-output"||plugin=="vision.mqtt-output"||
+                plugin=="vision.kafka-output"||plugin=="vision.rabbitmq-output"||plugin=="vision.nats-output"||
+                plugin=="vision.mysql-output"||plugin=="vision.postgresql-output");
+            if((!local&&!remote)||(remote&&output.value("replay_policy",std::string{})!="NonPhysicalIdempotent")||
+                (output.size()==4&&!output.contains("replay_policy")))
                 throw std::invalid_argument("Replay output not permitted");
             runtime::SupervisorPolicy policy;policy.restart_limit=0;
             lane.host=std::make_unique<runtime::qt::ProcessHost>(guard,QString::fromStdString(config.at("host").get<std::string>()),

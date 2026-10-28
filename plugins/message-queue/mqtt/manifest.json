@@ -1,0 +1,7 @@
+{
+ "schema_version":1,"sdk_api_version":1,"plugin_id":"vision.mqtt-output","plugin_version":"0.1.0","kind":"ResultOutput",
+ "build_id":"mqtt-output-v1","platform":"windows","architecture":"x64","compiler_abi":"msvc-v143-md","runtime_variant":"Release",
+ "entry_library":"vision-mqtt-output.dll","capabilities":["mqtt-3.1.1","qos1","explicit-business-ack","loopback-only"],"threading_model":"Serialized","max_instances":1,
+ "parameters_schema":{"type":"object","properties":{"endpoint":{"type":"string","maxLength":128},"publish_topic":{"type":"string","maxLength":128},"ack_topic":{"type":"string","maxLength":128},"client_id":{"type":"string","maxLength":64},"timeout_ms":{"type":"integer","minimum":100,"maximum":800}},
+ "required":["endpoint","publish_topic","ack_topic","client_id","timeout_ms"],"additionalProperties":false},"dependencies":[],"license_metadata":{"spdx":"NOASSERTION","file":"LICENSE.txt"}
+}

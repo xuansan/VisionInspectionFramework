@@ -1,0 +1,72 @@
+{
+  "schema_version": 1,
+  "sdk_api_version": 1,
+  "plugin_id": "vision.s7-device",
+  "plugin_version": "0.1.0",
+  "kind": "Communication",
+  "build_id": "s7-device-v1",
+  "platform": "windows",
+  "architecture": "x64",
+  "compiler_abi": "msvc-v143-md",
+  "runtime_variant": "Release",
+  "entry_library": "vision-s7-device.dll",
+  "capabilities": [
+    "s7-db",
+    "session-handshake"
+  ],
+  "threading_model": "Serialized",
+  "max_instances": 1,
+  "parameters_schema": {
+    "type": "object",
+    "properties": {
+      "address": {
+        "type": "string"
+      },
+      "port": {
+        "type": "integer",
+        "minimum": 1,
+        "maximum": 65535
+      },
+      "write_base": {
+        "type": "integer",
+        "minimum": 0,
+        "maximum": 65488
+      },
+      "read_base": {
+        "type": "integer",
+        "minimum": 0,
+        "maximum": 65486
+      },
+      "rack": {
+        "type": "integer",
+        "minimum": 0,
+        "maximum": 7
+      },
+      "slot": {
+        "type": "integer",
+        "minimum": 0,
+        "maximum": 31
+      },
+      "db": {
+        "type": "integer",
+        "minimum": 1,
+        "maximum": 65535
+      }
+    },
+    "required": [
+      "address",
+      "port",
+      "write_base",
+      "read_base",
+      "rack",
+      "slot",
+      "db"
+    ],
+    "additionalProperties": false
+  },
+  "dependencies": [],
+  "license_metadata": {
+    "spdx": "NOASSERTION",
+    "file": "LICENSE.txt"
+  }
+}

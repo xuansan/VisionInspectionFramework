@@ -1,0 +1,7 @@
+{
+ "schema_version":1,"sdk_api_version":1,"plugin_id":"vision.kafka-output","plugin_version":"0.1.0","kind":"ResultOutput",
+ "build_id":"kafka-output-v1","platform":"windows","architecture":"x64","compiler_abi":"msvc-v143-md","runtime_variant":"Release",
+ "entry_library":"vision-kafka-output.dll","capabilities":["kafka","explicit-business-ack","loopback-only"],"threading_model":"Serialized","max_instances":1,
+ "parameters_schema":{"type":"object","properties":{"port":{"type":"integer","minimum":1,"maximum":65535},"topic":{"type":"string","maxLength":128},"ack_topic":{"type":"string","maxLength":128},"partition_key":{"type":"string","maxLength":128},"ack_partition":{"type":"integer","minimum":0,"maximum":1023},"timeout_ms":{"type":"integer","minimum":100,"maximum":800}},
+ "required":["port","topic","ack_topic","partition_key","ack_partition","timeout_ms"],"additionalProperties":false},"dependencies":[],"license_metadata":{"spdx":"NOASSERTION","file":"LICENSE.txt"}
+}

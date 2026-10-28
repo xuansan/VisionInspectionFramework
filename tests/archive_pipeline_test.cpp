@@ -104,7 +104,21 @@ int main(int argc,char** argv){
             }
             if(scenario!="startfail"&&!saw_reader)throw std::runtime_error("No archive process observed");
             std::cout<<"archive "<<scenario<<": pixels, trace, isolation and leases passed\n";app.exit(0);
-        }catch(const std::exception& e){std::cerr<<e.what()<<'\n';if(runner){std::cerr<<runner->snapshot().last_result<<'\n';runner->stop();}app.exit(1);}});
+        }catch(const std::exception& e){
+            std::cerr<<e.what()<<'\n';
+            if(runner){
+                const auto failed_snapshot=runner->snapshot();
+                std::cerr<<failed_snapshot.last_result<<'\n';
+                std::cerr<<"device online="<<failed_snapshot.device.online
+                    <<" position="<<failed_snapshot.device.position<<" safety="<<failed_snapshot.device.safety_ok
+                    <<" physical="<<failed_snapshot.physical<<'\n';
+                for(const auto& worker:failed_snapshot.workers)
+                    std::cerr<<"worker phase="<<static_cast<int>(worker.phase)<<" epoch="<<worker.epoch
+                        <<" alive="<<worker.process_alive<<" reason="<<worker.reason<<'\n';
+                runner->stop();
+            }
+            app.exit(1);
+        }});
         timer.start();return app.exec();
     }catch(const std::exception& e){std::cerr<<e.what();return 1;}
 }

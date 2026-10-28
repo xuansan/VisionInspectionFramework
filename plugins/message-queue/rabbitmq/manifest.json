@@ -1,0 +1,7 @@
+{
+ "schema_version":1,"sdk_api_version":1,"plugin_id":"vision.rabbitmq-output","plugin_version":"0.1.0","kind":"ResultOutput",
+ "build_id":"rabbitmq-output-v1","platform":"windows","architecture":"x64","compiler_abi":"msvc-v143-md","runtime_variant":"Release",
+ "entry_library":"vision-rabbitmq-output.dll","capabilities":["amqp-0.9.1","publisher-confirm","explicit-business-ack","loopback-only"],"threading_model":"Serialized","max_instances":1,
+ "parameters_schema":{"type":"object","properties":{"port":{"type":"integer","minimum":1,"maximum":65535},"exchange":{"type":"string","maxLength":128},"routing_key":{"type":"string","maxLength":128},"vhost":{"type":"string","maxLength":128},"username_env":{"type":"string","maxLength":128},"password_env":{"type":"string","maxLength":128},"timeout_ms":{"type":"integer","minimum":100,"maximum":800}},
+ "required":["port","exchange","routing_key","vhost","username_env","password_env","timeout_ms"],"additionalProperties":false},"dependencies":[],"license_metadata":{"spdx":"NOASSERTION","file":"LICENSE.txt"}
+}

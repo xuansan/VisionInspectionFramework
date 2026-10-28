@@ -1,0 +1,26 @@
+diff --git a/plugins/auth/CMakeLists.txt b/plugins/auth/CMakeLists.txt
+--- a/plugins/auth/CMakeLists.txt
++++ b/plugins/auth/CMakeLists.txt
+@@ -4,7 +4,7 @@ INCLUDE_DIRECTORIES(${AUTH_DIR})
+ INCLUDE_DIRECTORIES(${CC_SOURCE_DIR}/include)
+ 
+ SET(CRYPTO_PLUGIN 1)
+-IF(WIN32)
++IF(WIN32 AND NOT WITH_SSL STREQUAL "OPENSSL")
+   ADD_DEFINITIONS(-DHAVE_WINCRYPT)
+   SET(CRYPT_SOURCE ${CC_SOURCE_DIR}/libmariadb/secure/win_crypt.c)
+   SET(CRYPT_LIBS crypt32 bcrypt)
+diff --git a/plugins/auth/my_auth.c b/plugins/auth/my_auth.c
+--- a/plugins/auth/my_auth.c
++++ b/plugins/auth/my_auth.c
+@@ -432,8 +432,7 @@
+     } else {
+       verify_flags|= MARIADB_TLS_VERIFY_TRUST;
+-      /* Don't check host name on local (non globally resolvable) addresses */
+-      if (!is_local_connection(mysql->net.pvio))
+-        verify_flags |= MARIADB_TLS_VERIFY_HOST;
++      /* Strict verification includes loopback names and IP addresses. */
++      verify_flags |= MARIADB_TLS_VERIFY_HOST;
+     }
+ 
+     if (mysql->options.extension->tls_verification_callback(mysql->net.pvio->ctls, verify_flags))

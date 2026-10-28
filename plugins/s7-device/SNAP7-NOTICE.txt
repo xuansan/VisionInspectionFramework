@@ -1,0 +1,20 @@
+Optional dependency: Snap7
+Upstream: https://github.com/davenardella/snap7
+Reviewed revision: 30f37da3114024a71ba93f7fd855c680b97a406f
+Copyright (C) Davide Nardella and the upstream contributors.
+
+The reviewed library source and C/C++ wrapper declare LGPL version 3
+or (at your option) any later version. See LGPL-3.0.txt and GPL-3.0.txt.
+The framework plugin's own license is separate; see LICENSE.txt.
+
+This adapter links the replaceable snap7.dll dynamically. No vendor binary
+is included in framework source. Local test builds may copy an installed
+library into ignored build directories only.
+
+If distributing snap7.dll, supply the corresponding source and build
+instructions for that exact binary using an applicable GPL/LGPL source
+delivery method, preserve notices and licenses, disclose modifications,
+and preserve the recipient's LGPL rights to replace/relink the library
+and debug modifications. Do not assume shipping this notice alone is enough.
+Record binary provenance and check all final installer/EULA restrictions.
+See docs/tasks/T22-T23-deployment.md for this project's deployment checklist.

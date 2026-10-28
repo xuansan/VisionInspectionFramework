@@ -1,0 +1,64 @@
+{
+  "schema_version": 1,
+  "sdk_api_version": 1,
+  "plugin_id": "vision.hik-camera",
+  "plugin_version": "0.1.0",
+  "kind": "Camera",
+  "build_id": "hik-camera-v1",
+  "platform": "windows",
+  "architecture": "x64",
+  "compiler_abi": "msvc-v143-md",
+  "runtime_variant": "Release",
+  "entry_library": "@HIK_LIBRARY@",
+  "capabilities": [
+    "software-trigger",
+    "shared-image",
+    "mono8",
+    "rgb8",
+    "bgr8"
+  ],
+  "threading_model": "Serialized",
+  "max_instances": 1,
+  "parameters_schema": {
+    "type": "object",
+    "properties": {
+      "serial": {
+        "type": "string"
+      },
+      "width": {
+        "type": "integer"
+      },
+      "height": {
+        "type": "integer"
+      },
+      "format": {
+        "type": "string",
+        "enum": [
+          "Mono8",
+          "RGB8",
+          "BGR8"
+        ]
+      },
+      "exposure_us": {
+        "type": "number"
+      },
+      "gain": {
+        "type": "number"
+      }
+    },
+    "required": [
+      "serial",
+      "width",
+      "height",
+      "format",
+      "exposure_us",
+      "gain"
+    ],
+    "additionalProperties": false
+  },
+  "dependencies": [],
+  "license_metadata": {
+    "spdx": "NOASSERTION",
+    "file": "LICENSE.txt"
+  }
+}

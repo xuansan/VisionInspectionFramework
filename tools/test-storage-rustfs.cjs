@@ -44,8 +44,21 @@ function execute(request,expected=0,operation='upload') {
   execute({root:store},1,'resume-uploads'); // Third unavailable attempt terminates.
   const settled=JSON.parse(execute({root:store},0,'resume-uploads'));
   if(settled.completed||settled.failed)throw Error('Upload retry did not terminate');
+  const pluginTest=path.join(root,'out/build/windows-ipc/tests/Release/vision-s3-storage-plugin-tests.exe');
+  const manifest=path.join(root,'out/build/windows-ipc/plugins/s3-storage/Release/s3-storage.json');
+  if(!fs.existsSync(pluginTest)||!fs.existsSync(manifest))throw Error('Build storage plugin tests before full RustFS verification');
+  for(const mode of ['direct','process']){
+   const args=[manifest,'success'];
+   if(mode==='process')args.push(path.join(root,'out/build/windows-ipc/apps/worker-host/Release/vision-worker-host.exe'),
+    path.join(root,'out/build/windows-ipc/plugins/test-output/Release/test-output.json'));
+   const p=spawnSync(pluginTest,args,{env:{...env,VISION_S3_PLUGIN_ENDPOINT:`http://127.0.0.1:${port}`,
+    VISION_S3_PLUGIN_ACCESS:access,VISION_S3_PLUGIN_SECRET:secret},windowsHide:true,encoding:'utf8',timeout:12000});
+   fs.writeFileSync(path.join(dir,`plugin-${mode}.log`),(p.stdout||'')+(p.stderr||''));
+   if(p.error||p.status!==0)throw Error(`RustFS plugin ${mode} failed ${p.status}: ${p.stderr}`);
+  }
   console.log('PASS RustFS: actual signed PUT/GET hash, duplicate upload, destination collision, missing bucket, restart resume, bounded retry');
-  fs.writeFileSync(path.join(dir,'result.json'),JSON.stringify({passed:true,checks:8,serviceStopped:false}));
+  console.log('PASS RustFS plugin: archived images via ObjectStorage loader and worker-host, hash verification and healthy peer');
+  fs.writeFileSync(path.join(dir,'result.json'),JSON.stringify({passed:true,checks:10,serviceStopped:false}));
  } finally {
   if(child.exitCode===null&&!error){const ended=new Promise(r=>child.once('exit',r));child.kill();await ended;}
   const resultFile=path.join(dir,'result.json');

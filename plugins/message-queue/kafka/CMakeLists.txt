@@ -1,0 +1,6 @@
+option(VISION_BUILD_KAFKA_OUTPUT "Build local Kafka output with business receipts" OFF)
+set(VISION_RDKAFKA_ROOT "${PROJECT_SOURCE_DIR}/开发环境/SDK/librdkafka" CACHE PATH "librdkafka 2.8.0 static SDK")
+if(VISION_BUILD_KAFKA_OUTPUT)
+    vision_mq_plugin(kafka "${VISION_RDKAFKA_ROOT}" "${VISION_RDKAFKA_ROOT}/lib/rdkafka.lib")
+    target_compile_definitions(vision-kafka-output PRIVATE LIBRDKAFKA_STATICLIB)
+endif()

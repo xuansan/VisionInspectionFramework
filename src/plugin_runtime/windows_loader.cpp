@@ -136,6 +136,22 @@ Status Library::device_exchange(std::string_view request,std::string& response) 
     if(status==Status::Ok)response.assign(reinterpret_cast<const char*>(storage.data()),out.size);
     return status;
 }
+Status Library::storage_submit(std::string_view request) {
+    if(!impl_->initialized||impl_->closed||request.size()>max_payload||impl_->manifest.kind!="ObjectStorage")return Status::Invalid;
+    auto storage=dynamic_cast<ObjectStorage*>(impl_->instance);if(!storage)return Status::Invalid;
+    return storage->try_operation({reinterpret_cast<const std::uint8_t*>(request.data()),static_cast<std::uint32_t>(request.size())});
+}
+Status Library::storage_poll(std::string& response) {
+    response.clear();
+    if(!impl_->initialized||impl_->closed||impl_->manifest.kind!="ObjectStorage")return Status::Invalid;
+    auto storage=dynamic_cast<ObjectStorage*>(impl_->instance);if(!storage)return Status::Invalid;
+    std::array<std::uint8_t,max_payload> bytes{};
+    Buffer out{bytes.data(),static_cast<std::uint32_t>(bytes.size()),0};
+    const auto status=storage->poll_completion(out);
+    if(out.data!=bytes.data()||out.capacity!=bytes.size()||out.size>bytes.size())return Status::Invalid;
+    if(status==Status::Ok)response.assign(reinterpret_cast<const char*>(bytes.data()),out.size);
+    return status;
+}
 Status Library::camera_output(bool enumerate,std::string& output) {
     output.clear();
     if(!impl_->initialized||impl_->closed)return Status::Invalid;

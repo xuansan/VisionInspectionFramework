@@ -1,3 +1,4 @@
+#include "../common/plc_input.hpp"
 #include <vision/plugin_sdk/api.hpp>
 #include <vision/modbus/client.hpp>
 #include <vision/contracts/types.hpp>
@@ -23,55 +24,66 @@ class Device final:public Communication {
 public:
     Status initialize(Bytes bytes) noexcept override {
         try {
-            const auto j=J::parse(bytes.data,bytes.data+bytes.size);
+            if(!bytes.data||!bytes.size||bytes.size>16384)return Status::Invalid;
+            const auto j=plc::parse(bytes);
             for(auto it=j.begin();it!=j.end();++it)if(it.key()!="address"&&it.key()!="port"&&it.key()!="unit"&&it.key()!="write_base"&&it.key()!="read_base")return Status::Invalid;
             auto integer=[&](const char* key,unsigned limit){const auto& v=j.at(key);if(!v.is_number_integer()||v.get<std::int64_t>()<0||v.get<std::uint64_t>()>limit)throw std::invalid_argument("Register configuration");return v.get<unsigned>();};
+            if(initialized_||stopped_||!j.is_object()||j.size()!=5)return Status::Invalid;
             address_=j.at("address");port_=static_cast<std::uint16_t>(integer("port",65535));unit_=static_cast<std::uint8_t>(integer("unit",255));
             write_=static_cast<std::uint16_t>(integer("write_base",65512));read_=static_cast<std::uint16_t>(integer("read_base",65511));
-            if(!port_||!(write_+24<=read_||read_+25<=write_))return Status::Invalid;
-            return Status::Ok;
+            if(!plc::ipv4(address_)||!port_||!(write_+24<=read_||read_+25<=write_))return Status::Invalid;
+            initialized_=true;return Status::Ok;
         }catch(...){return Status::Invalid;}
     }
     void request_stop() noexcept override{stopped_=true;}
     Status connect(Bytes bytes) noexcept override {
         try {
-            const auto id=J::parse(bytes.data,bytes.data+bytes.size).at("session_id").get<std::string>();(void)contracts::TaskId(id);
+            if(!initialized_||stopped_||!bytes.data||!bytes.size||bytes.size>16384)return Status::Invalid;
+            const auto id=plc::parse(bytes).at("session_id").get<std::string>();(void)contracts::TaskId(id);
             if(!session_.empty())return session_==id&&!stopped_?Status::Ok:Status::Invalid;
             client_=std::make_unique<modbus::Client>(address_,port_,unit_);session_=id;return Status::Ok;
         }catch(...){return Status::Failed;}
     }
     Status try_command(Bytes bytes) noexcept override {
         try {
-            if(stopped_||!client_||!report_.empty())return Status::Busy;
-            const auto j=J::parse(bytes.data,bytes.data+bytes.size);
+            if(stopped_)return Status::Cancelled;
+            if(!client_||!report_.empty())return Status::Busy;
+            if(!bytes.data||!bytes.size||bytes.size>16384)return Status::Invalid;
+            const auto j=plc::parse(bytes);
             const auto sequence=contracts::parse_u64(j.at("command_sequence").get<std::string>());
-            if(j.at("session_id")!=session_||sequence<=sequence_)return Status::Invalid;sequence_=sequence;
+            if(j.at("session_id")!=session_||sequence<=sequence_)return Status::Invalid;
             const auto identity=token(session_);auto words=identity;append(words,sequence);
             words.push_back(j.at("ready").get<bool>()?1:0);
             const bool result=!j.at("result_id").is_null();
             const auto result_id=result?j.at("result_id").get<std::string>():std::string{};
+            if(result)(void)contracts::TaskId(result_id);
+            const auto quality=j.at("quality").get<std::string>();
+            if((result&&quality!="OK"&&quality!="NG")||(!result&&quality!="Unknown"))return Status::Invalid;
             const auto result_token=result?token(result_id):std::vector<std::uint16_t>(8);
             words.insert(words.end(),result_token.begin(),result_token.end());words.push_back(result?1:0);
             words.push_back(200);words.push_back(j.at("quality")=="OK"?1:j.at("quality")=="NG"?2:0);
-            client_->write(write_,words);const auto reply=client_->read(read_,25);
+            sequence_=sequence; // Reserve before IO: uncertain writes must never be replayed.
+            client_->write(write_,words);
+            if(stopped_)return Status::Cancelled;
+            const auto reply=client_->read(read_,25);
             if(!std::equal(identity.begin(),identity.end(),reply.begin())||number(reply,8)!=sequence)
-                return Status::Failed;
+                {stopped_=true;return Status::Failed;}
             const bool ready=reply[12]&1,position=reply[12]&2,safety=reply[12]&4;
             if(reply[12]>7||ready&&(!position||!safety)||!std::equal(result_token.begin(),result_token.end(),reply.begin()+17))
-                return Status::Failed;
+                {stopped_=true;return Status::Failed;}
             report_=J{{"session_id",session_},{"command_sequence",std::to_string(sequence)},{"ready",ready},
                 {"position",position},{"safety_ok",safety},{"arrival_sequence",std::to_string(number(reply,13))},
                 {"ack_id",result?J(result_id):J(nullptr)}}.dump();return Status::Ok;
-        }catch(...){return Status::Failed;}
+        }catch(...){stopped_=true;return Status::Failed;}
     }
     Status poll_input(Buffer& out) noexcept override {
-        if(stopped_)return Status::Cancelled;if(report_.empty())return Status::Busy;
-        if(report_.size()>out.capacity)return Status::Invalid;
+        out.size=0;if(stopped_)return Status::Cancelled;if(report_.empty())return Status::Busy;
+        if(!out.data||report_.size()>out.capacity)return Status::Invalid;
         std::memcpy(out.data,report_.data(),report_.size());out.size=static_cast<std::uint32_t>(report_.size());report_.clear();return Status::Ok;
     }
 private:
     std::unique_ptr<modbus::Client> client_;std::atomic<bool> stopped_{};
-    std::string address_,session_,report_;std::uint16_t port_{},write_{},read_{};std::uint8_t unit_{};std::uint64_t sequence_{};
+    bool initialized_{};std::string address_,session_,report_;std::uint16_t port_{},write_{},read_{};std::uint8_t unit_{};std::uint64_t sequence_{};
 };
 template<std::size_t N>void copy(char(&out)[N],const char* text){const auto n=std::strlen(text);if(n<N)std::memcpy(out,text,n+1);}
 }

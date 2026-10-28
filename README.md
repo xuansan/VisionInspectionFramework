@@ -6,7 +6,7 @@
 
 仓库同时提供 Qt 工作站、命令行演示、故障测试和 Agent 开发 Skill。可以先运行模拟工位，理解检测链路，再逐步接入自己的设备与业务。
 
-> **当前阶段：0.2.0 开发版，Windows 优先。** 已完成多进程模拟检测和部分真实软件依赖的验证；真实相机、现场 PLC、完整生产恢复及正式打包尚未验收。Production 模式保持禁用，不应直接用于产线控制。项目自身的开源许可证尚未选定。
+> **当前阶段：0.3.0 开发版，Windows 优先。** 已完成多进程模拟检测、OpenCV 传统算法、海康 MVS/S7/Modbus、消息队列和数据库输出的部分软件验证；真实相机、现场 PLC、完整生产恢复及正式打包尚未验收。Production 模式保持禁用，不应直接用于产线控制。项目自身的开源许可证尚未选定。
 
 ## 微信交流群
 
@@ -35,13 +35,15 @@
 
 ## 核心能力
 
-- **插件与进程监护**：Camera、Algorithm、Communication、ResultOutput 接入公共宿主，提供进程生命周期管理、心跳、期限和有限恢复机制。
+- **插件与进程监护**：Camera、Algorithm、Communication、ResultOutput、ObjectStorage 接入公共宿主，提供进程生命周期管理、心跳、期限和有限恢复机制。
 - **有界运行资源**：队列、消息、图像池和运行诊断有容量约束，处理超时、背压与资源归还。
 - **共享图像**：通过图像描述符和租约移交数据，支持读访问、超时隔离和进程退出后的回收。
 - **检测业务模型**：区分任务执行、检测质量、存储状态和输出交付，使用工件及任务身份关联结果。
 - **算法与回放**：提供基础算法示例和 ONNX Runtime CPU 推理路径，覆盖目标检测、分类、实例分割及离线回放。
+- **传统视觉**：可选 OpenCV 插件，提供阈值/形态学、连通域筛选、像素尺寸检查与固定尺度角度模板定位；[配置与边界](plugins/algorithm/opencv/README.md)。
 - **配方与追溯**：已有配方校验、原子保存、排空切换、回退、有效配置快照、SQLite 结果和本地图像归档能力。
-- **输出扩展**：文件、SQLite、只读 HTTP REST/SSE 输出插件，以及持久分发、交付确认和对象存储工具。
+- **输出扩展**：文件、SQLite、只读 HTTP REST/SSE、Webhook、可选 MQTT/Kafka/RabbitMQ/NATS JetStream 输出，以及持久分发和 RustFS/S3 存储插件。
+- **消息队列**：按协议分目录的可选 Kafka、RabbitMQ、NATS JetStream 输出，复用独立宿主和业务确认契约。
 - **Agent 开发支持**：提供应用与结果输出插件模板、接口兼容检查、构建及验证脚本。
 
 这些能力的完成范围见下表；接口存在、模拟通过和现场可用是不同的验收阶段。
@@ -78,16 +80,26 @@ flowchart TB
 |---|---|---|
 | 运行平台 | Windows x64 / MSVC v143 | Linux 核心预设已提供，尚未完成验证；不是整套跨平台交付 |
 | Qt 工作站 | Qt 6.8.3 Widgets，多进程状态与模型工具 | 开发演示界面，非正式发行包 |
-| 相机采集 | 模拟相机插件、固定图及序列 PGM/PPM 回放、双相机协调 | 真实 MVS 相机尚未验收 |
-| 算法 | 基础亮度示例，ONNX CPU 检测/分类/实例分割 | 模型为原创契约测试样例，不能代表实际缺陷识别精度 |
-| 设备通信 | 模拟 PLC、Modbus TCP 软件适配 | 已有 TCP 对端测试，未完成现场 PLC 验收 |
+| 相机采集 | 模拟/回放、双相机协调，以及可选海康 MVS 插件 | MVS 编译及 fake 宿主测试；真实相机尚未验收 |
+| 算法 | 基础亮度、ONNX CPU、可选 OpenCV 传统算法 | 契约样例不代表实际精度；OpenCV 测量为像素、模板固定尺度角度，HALCON 未接入 |
+| 设备通信 | 模拟 PLC、Modbus TCP，以及可选 Snap7/S7 插件 | 本机软件对端与业务 ACK 测试；未完成现场 PLC 验收 |
 | 配方 | 校验、保存、切换、回退及快照接口 | 不代表所有操作均已集成到工作站页面 |
 | 本地追溯 | SQLite、原图归档、trace 查询、JSONL/CSV | 完整生产恢复和断电验证尚未完成 |
-| 对象存储 | RustFS 上传/续传工具及集成验证 | 工位原图尚未自动上传；掩码持久化和远端对账待补；ObjectStorage 宿主接入未完成 |
-| 网络输出 | 独立 HTTP REST/SSE 输出插件 | 只读查询/事件输出，不是完整远程控制 API；不是远端消费确认 |
+| 外部数据库输出 | 可选 MySQL、PostgreSQL 插件，事务写入结果/缺陷/本地图像引用 | 独立宿主、幂等冲突检测与 TLS；远程网络、集群、长稳和生产恢复待验 |
+| 对象存储 | RustFS 上传/续传工具、ObjectStorage 插件及宿主/持久 agent 路径 | GUI 默认未开启远端上传；掩码持久化、保留清理和远端对账待补 |
+| 网络输出 | HTTP REST/SSE、Webhook、可选 MQTT/Kafka/RabbitMQ/NATS JetStream | HTTP 为只读服务；消息队列区分 broker 确认与业务回执；新增 MQ 当前仅回环连接，远端 TLS/认证待补 |
 | 扩展开发 | 公共宿主、插件契约、应用和输出模板 | 模板以模拟 Demo 为范围，不是生产应用生成器 |
 
 完整进展及未关闭事项以 [开发进度及计划](开发进度及计划.md) 为准。
+
+海康/S7 可选构建、PLC 握手与第三方运行库部署见[设备接入说明](docs/tasks/T22-T23-deployment.md)。
+
+新增插件的配置与边界见 [Webhook](plugins/webhook-output/README.md)、
+[MQTT](plugins/message-queue/mqtt/README.md)、[RustFS/S3](plugins/s3-storage/README.md)。
+Kafka/RabbitMQ/NATS 的构建、参数、确认语义及验证边界见[消息队列说明](plugins/message-queue/README.md)。
+MySQL/PostgreSQL 的可选构建、迁移、账号、TLS 和重放边界见[数据库插件说明](plugins/database/README.md)。
+MQTT 默认不构建，需要 Paho C 1.3.15 静态 SDK 和
+`-DVISION_BUILD_MQTT_OUTPUT=ON`；网络输出的自动重放须明确声明非物理幂等策略。
 
 ## 快速开始
 
@@ -260,6 +272,7 @@ node tools/build.cjs windows-all
 
 | 主题 | 文档 |
 |---|---|
+| 版本更新 | [更新说明](CHANGELOG.md) |
 | 总体设计 | [架构设计](架构设计.md)、[开发计划及要求](开发计划及要求.md) |
 | 进度与证据 | [开发进度及计划](开发进度及计划.md)、[验收记录](docs/acceptance) |
 | Agent 开发 | [Skill 使用指南](docs/Skill开发使用指南.md) |
